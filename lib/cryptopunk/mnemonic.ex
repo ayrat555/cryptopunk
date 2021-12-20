@@ -34,7 +34,6 @@ defmodule Cryptopunk.Mnemonic do
 
     case found_entropy_bits do
       {_, entropy_bits} ->
-        IO.inspect({entropy, entropy_bits})
         do_create_from_entropy(entropy, entropy_bits)
 
       _ ->
@@ -57,9 +56,9 @@ defmodule Cryptopunk.Mnemonic do
 
   defp append_checksum(entropy, entropy_bits) do
     checksum_size = div(entropy_bits, 32)
-    <<checksum::bits-size(checksum_size), _::bits>> = ExKeccak.hash_256(entropy)
+    <<checksum::bits-size(checksum_size), _::bits>> = :crypto.hash(:sha256, entropy)
 
-    <<entropy::bitstring, checksum::bitstring>>
+    <<entropy::bits, checksum::bits>>
   end
 
   defp to_mnemonic(bytes) do

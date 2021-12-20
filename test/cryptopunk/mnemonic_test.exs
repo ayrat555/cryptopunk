@@ -32,7 +32,7 @@ defmodule Cryptopunk.MnemonicTest do
         |> Jason.decode!()
 
       for [entropy, mnemonic, _, _] <- tests do
-        entropy = Base.decode16(entropy, case: :mixed)
+        {:ok, entropy} = Base.decode16(entropy, case: :lower)
 
         assert mnemonic == Mnemonic.create_from_entropy(entropy)
       end
@@ -48,7 +48,7 @@ defmodule Cryptopunk.MnemonicTest do
       result = Mnemonic.create_from_entropy(bytes)
 
       expected_result =
-        "almost coil firm shield cement hobby fan cage wine idea track prison scale alone close favorite limb split"
+        "almost coil firm shield cement hobby fan cage wine idea track prison scale alone close favorite limb still"
 
       assert expected_result == result
     end
