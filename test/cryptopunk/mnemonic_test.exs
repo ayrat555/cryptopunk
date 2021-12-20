@@ -24,5 +24,33 @@ defmodule Cryptopunk.MnemonicTest do
                      Mnemonic.create(10)
                    end
     end
+
+    # https://github.com/trezor/python-mnemonic/blob/master/vectors.json
+    test "verifies with bip tests" do
+      %{"english" => tests} =
+        File.read!("test/support/mnemonic_test.json")
+        |> Jason.decode!()
+
+      for [entropy, mnemonic, _, _] <- tests do
+        entropy = Base.decode16(entropy, case: :mixed)
+
+        assert mnemonic == Mnemonic.create_from_entropy(entropy)
+      end
+    end
+  end
+
+  describe "create_from_entropy/2" do
+    test "create mnemonic from the provided entropy" do
+      bytes =
+        <<6, 197, 169, 93, 98, 210, 82, 216, 148, 177, 1, 251, 142, 15, 154, 85, 140, 0, 13, 202,
+          234, 160, 129, 218>>
+
+      result = Mnemonic.create_from_entropy(bytes)
+
+      expected_result =
+        "almost coil firm shield cement hobby fan cage wine idea track prison scale alone close favorite limb split"
+
+      assert expected_result == result
+    end
   end
 end

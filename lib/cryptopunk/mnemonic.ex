@@ -22,6 +22,29 @@ defmodule Cryptopunk.Mnemonic do
 
     entropy_bits
     |> create_entropy()
+    |> do_create_from_entropy(entropy_bits)
+  end
+
+  @spec create_from_entropy(binary()) :: String.t() | no_return
+  def create_from_entropy(entropy) do
+    found_entropy_bits =
+      Enum.find(@word_number_to_entropy_bits, fn {_number, bits} ->
+        div(bits, 8) == byte_size(entropy)
+      end)
+
+    case found_entropy_bits do
+      {_, entropy_bits} ->
+        IO.inspect({entropy, entropy_bits})
+        do_create_from_entropy(entropy, entropy_bits)
+
+      _ ->
+        raise ArgumentError,
+          message: "Entropy size is invalid"
+    end
+  end
+
+  defp do_create_from_entropy(entropy, entropy_bits) do
+    entropy
     |> append_checksum(entropy_bits)
     |> to_mnemonic()
   end
@@ -36,7 +59,7 @@ defmodule Cryptopunk.Mnemonic do
     checksum_size = div(entropy_bits, 32)
     <<checksum::bits-size(checksum_size), _::bits>> = ExKeccak.hash_256(entropy)
 
-    entropy <> checksum
+    <<entropy::bitstring, checksum::bitstring>>
   end
 
   defp to_mnemonic(bytes) do
