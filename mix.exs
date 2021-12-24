@@ -27,7 +27,7 @@ defmodule Cryptopunk.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_keccak, "~> 0.2"},
+      {:ex_pbkdf2, "~> 0.1", override: true},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:jason, "~> 1.2"}
     ]
