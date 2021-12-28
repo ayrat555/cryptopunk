@@ -28,4 +28,20 @@ defmodule Cryptopunk.DerivationPathTest do
       assert {:error, {:invalid_level, :coin_type}} = DerivationPath.parse(path)
     end
   end
+
+  describe "to_raw_path/1" do
+    test "converts to raw path" do
+      path = %DerivationPath{
+        account: 0,
+        address_index: 1,
+        change: 0,
+        coin_type: 2,
+        purpose: 44,
+        type: :private
+      }
+
+      assert {:private, [hardened: 44, hardened: 2, hardened: 0, public: 0, public: 1]} =
+               DerivationPath.to_raw_path(path)
+    end
+  end
 end

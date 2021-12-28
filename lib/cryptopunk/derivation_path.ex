@@ -2,6 +2,10 @@ defmodule Cryptopunk.DerivationPath do
   defstruct [:type, :purpose, :coin_type, :account, :change, :address_index]
 
   @type t :: %__MODULE__{}
+  @type raw_path :: {atom(), [{atom(), non_neg_integer}]}
+
+  @hard :hardened
+  @public :public
 
   @spec new(Keyword.t()) :: t()
   def new(opts) do
@@ -28,6 +32,25 @@ defmodule Cryptopunk.DerivationPath do
     string_path
     |> String.split("/")
     |> do_parse()
+  end
+
+  @spec to_raw_path(t()) :: raw_path()
+  def to_raw_path(%__MODULE__{
+        type: type,
+        purpose: purpose,
+        coin_type: coin_type,
+        account: account,
+        change: change,
+        address_index: address_index
+      }) do
+    {type,
+     [
+       {@hard, purpose},
+       {@hard, coin_type},
+       {@hard, account},
+       {@public, change},
+       {@public, address_index}
+     ]}
   end
 
   defp do_parse([type, purpose, coin_type, account, change, address_index]) do

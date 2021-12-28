@@ -11,12 +11,18 @@ defmodule Cryptopunk.Keys do
 
   @spec public_from_private(binary()) :: binary()
   def public_from_private(private_key) do
-    {public_key, _private_key} = :crypto.generate_key(:ecdh, :secp256k1, private_key)
+    {public_key, ^private_key} = :crypto.generate_key(:ecdh, :secp256k1, private_key)
 
     public_key
   end
 
-  @spec derive(binary(), DerivationPath.t()) :: binary()
-  def derive(master_key, path) do
+  @spec derive(binary(), binary(), DerivationPath.t() | DerivationPath.raw_path()) :: binary()
+  def derive(key, chain_code, %DerivationPath{} = path) do
+    raw_path = DerivationPath.to_raw_path(path)
+
+    derive(key, chain_code, raw_path)
+  end
+
+  def derive(key, chain_code, path) do
   end
 end
