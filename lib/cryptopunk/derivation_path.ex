@@ -1,11 +1,12 @@
 defmodule Cryptopunk.DerivationPath do
-  defstruct [:purpose, :coin_type, :account, :change, :address_index]
+  defstruct [:type, :purpose, :coin_type, :account, :change, :address_index]
 
   @type t :: %__MODULE__{}
 
   @spec new(Keyword.t()) :: t()
   def new(opts) do
-    purpose = Keyword.get(opts, :purpose, "m")
+    type = Keyword.get(opts, :type, :private)
+    purpose = Keyword.get(opts, :purpose, 44)
     change = Keyword.get(opts, :change, 0)
 
     coin_type = Keyword.fetch!(opts, :coin_type)
@@ -13,11 +14,63 @@ defmodule Cryptopunk.DerivationPath do
     address_index = Keyword.fetch!(opts, :address_index)
 
     %__MODULE__{
+      type: type,
       purpose: purpose,
       change: change,
       coin_type: coin_type,
       account: account,
       address_index: address_index
     }
+  end
+
+  @spec parse(String.t()) :: {:error, any()} | {:ok, t()}
+  def parse(string_path) do
+    string_path
+    |> String.split("/")
+    |> do_parse()
+  end
+
+  defp do_parse([type, purpose, coin_type, account, change, address_index]) do
+    with {:ok, type} <- parse_type(type),
+         {:ok, purpose} <- parse_int(purpose, type: :purpose, hardened: true),
+         {:ok, coin_type} <- parse_int(coin_type, type: :coin_type, hardened: true),
+         {:ok, account} <- parse_int(account, type: :account, hardened: true),
+         {:ok, change} <- parse_int(change, type: :change),
+         {:ok, address_index} <- parse_int(address_index, type: :address_index) do
+      params = [
+        type: type,
+        purpose: purpose,
+        coin_type: coin_type,
+        account: account,
+        change: change,
+        address_index: address_index
+      ]
+
+      {:ok, new(params)}
+    end
+  end
+
+  defp do_parse(_other), do: {:error, :invalid_path}
+
+  defp parse_type(type) do
+    case type do
+      "m" -> {:ok, :private}
+      "M" -> {:ok, :public}
+      _ -> {:error, {:invalid_level, :type}}
+    end
+  end
+
+  defp parse_int(int, type: type, hardened: true) do
+    case Integer.parse(int) do
+      {num, "'"} -> {:ok, num}
+      _ -> {:error, {:invalid_level, type}}
+    end
+  end
+
+  defp parse_int(int, type: type) do
+    case Integer.parse(int) do
+      {num, ""} -> {:ok, num}
+      _ -> {:error, {:invalid_level, type}}
+    end
   end
 end
