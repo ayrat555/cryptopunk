@@ -40,7 +40,7 @@ defmodule Cryptopunk.DerivationPathTest do
         type: :private
       }
 
-      assert {:private, [hardened: 44, hardened: 2, hardened: 0, public: 0, public: 1]} =
+      assert {:private, [2_147_483_692, 2_147_483_650, 2_147_483_648, 0, 1]} =
                DerivationPath.to_raw_path(path)
     end
   end
