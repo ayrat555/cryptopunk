@@ -2,10 +2,12 @@ defmodule Cryptopunk.DerivationPath do
   defstruct [:type, :purpose, :coin_type, :account, :change, :address_index]
 
   @type t :: %__MODULE__{}
-  @type raw_path :: {atom(), [{atom(), non_neg_integer}]}
+  @type raw_path :: {atom(), [non_neg_integer]}
 
-  @hard :hardened
-  @public :public
+  @two_power_31 2_147_483_648
+
+  defguard is_hardened(x) when is_integer(x) and x >= @two_power_31
+  defguard is_normal(x) when is_integer(x) and x >= 0 and x < @two_power_31
 
   @spec new(Keyword.t()) :: t()
   def new(opts) do
@@ -45,11 +47,11 @@ defmodule Cryptopunk.DerivationPath do
       }) do
     {type,
      [
-       {@hard, purpose},
-       {@hard, coin_type},
-       {@hard, account},
-       {@public, change},
-       {@public, address_index}
+       purpose + @two_power_31,
+       coin_type + @two_power_31,
+       account + @two_power_31,
+       change,
+       address_index
      ]}
   end
 
