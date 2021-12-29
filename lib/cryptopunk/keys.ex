@@ -28,16 +28,16 @@ defmodule Cryptopunk.Keys do
   def derive(key, %DerivationPath{} = path) do
     raw_path = DerivationPath.to_raw_path(path)
 
-    derive(key, raw_path)
+    do_derive(key, raw_path)
   end
 
-  def derive(%Private{} = private_key, {:public, []}) do
+  def do_derive(%Private{} = private_key, []) do
     public_from_private(private_key)
   end
 
-  def derive(key, {_, []}), do: key
+  def do_derive(key, {_, []}), do: key
 
-  def derive(%Private{chain_code: chain_code} = private_key, {_, [idx | tail]})
+  def do_derive(%Private{chain_code: chain_code} = private_key, [idx | tail])
       when is_normal(idx) do
     ser_public_key =
       private_key
@@ -47,35 +47,44 @@ defmodule Cryptopunk.Keys do
     new_private_key =
       chain_code
       |> hmac_sha512(<<ser_public_key::binary, idx::32>>)
-      |> create_derived_private_key(private_key)
+      |> create_from_private_key(private_key)
 
-    derive(new_private_key, {:private, tail})
+    derive(new_private_key, tail)
   end
 
-  def derive(%Private{chain_code: chain_code, key: key} = private_key, {_, [idx | tail]})
+  def do_derive(%Private{chain_code: chain_code, key: key} = private_key, [idx | tail])
       when is_hardened(idx) do
     new_private_key =
       chain_code
       |> hmac_sha512(<<0::8, key::binary, idx::32>>)
-      |> create_derived_private_key(private_key)
+      |> create_from_private_key(private_key)
 
-    derive(new_private_key, {:private, tail})
+    derive(new_private_key, tail)
   end
 
-  def derive(%Public{}, {:private, _}) do
-    raise ArgumentError, "Can not derive child private key from parent public key"
+  def do_derive(%Public{chain_code: chain_code} = public_key, [idx | tail])
+      when is_normal(idx) do
+    ser_public_key = ser_p(public_key)
+
+    new_private_key =
+      chain_code
+      |> hmac_sha512(<<ser_public_key::binary, idx::32>>)
+      |> create_from_public_key(public_key)
+
+    derive(new_private_key, tail)
   end
 
-  # def derive(%Public{chain_code: chain_code, key: key}, {:public, [idx | tail]}) do
-  #   new_private_key =
-  #     chain_code
-  #     |> hmac_sha512(<<0::8, key::binary, idx::32>>)
-  #     |> create_derived_private_key(private_key)
+  def do_derive(%Public{}, [idx | _tail]) when is_hardened(idx) do
+    raise ArgumentError, "Can not derive hardened key from public key"
+  end
 
-  #   derive(new_private_key, {:private, tail})
-  # end
+  defp create_from_public_key(<<l_l::256, l_r::binary>>, %Public{key: key}) do
+    {:ok, new_public_key} = ExSecp256k1.public_key_tweak_add(key, l_l)
 
-  defp create_derived_private_key(
+    Public.new(new_public_key, l_r)
+  end
+
+  defp create_from_private_key(
          <<new_key::256, new_chain::binary>>,
          %Private{key: <<parent_key::256>>}
        ) do
