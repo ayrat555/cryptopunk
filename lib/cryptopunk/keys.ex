@@ -28,14 +28,24 @@ defmodule Cryptopunk.Keys do
   def derive(key, %DerivationPath{} = path) do
     raw_path = DerivationPath.to_raw_path(path)
 
-    do_derive(key, raw_path)
+    derive(key, raw_path)
   end
 
-  def do_derive(%Private{} = private_key, []) do
-    public_from_private(private_key)
+  def derive(%Public{}, {:private, _}) do
+    raise ArgumentError, message: "Can not derive private key from public key"
   end
 
-  def do_derive(key, {_, []}), do: key
+  def derive(%Private{} = key, {:public, path}) do
+    key
+    |> do_derive(path)
+    |> public_from_private()
+  end
+
+  def derive(key, {_type, path}) do
+    do_derive(key, path)
+  end
+
+  def do_derive(key, []), do: key
 
   def do_derive(%Private{chain_code: chain_code} = private_key, [idx | tail])
       when is_normal(idx) do
@@ -49,7 +59,7 @@ defmodule Cryptopunk.Keys do
       |> hmac_sha512(<<ser_public_key::binary, idx::32>>)
       |> create_from_private_key(private_key)
 
-    derive(new_private_key, tail)
+    do_derive(new_private_key, tail)
   end
 
   def do_derive(%Private{chain_code: chain_code, key: key} = private_key, [idx | tail])
@@ -59,7 +69,7 @@ defmodule Cryptopunk.Keys do
       |> hmac_sha512(<<0::8, key::binary, idx::32>>)
       |> create_from_private_key(private_key)
 
-    derive(new_private_key, tail)
+    do_derive(new_private_key, tail)
   end
 
   def do_derive(%Public{chain_code: chain_code} = public_key, [idx | tail])
@@ -71,14 +81,14 @@ defmodule Cryptopunk.Keys do
       |> hmac_sha512(<<ser_public_key::binary, idx::32>>)
       |> create_from_public_key(public_key)
 
-    derive(new_private_key, tail)
+    do_derive(new_private_key, tail)
   end
 
   def do_derive(%Public{}, [idx | _tail]) when is_hardened(idx) do
-    raise ArgumentError, "Can not derive hardened key from public key"
+    raise ArgumentError, message: "Can not derive hardened key from public key"
   end
 
-  defp create_from_public_key(<<l_l::256, l_r::binary>>, %Public{key: key}) do
+  defp create_from_public_key(<<l_l::binary-32, l_r::binary>>, %Public{key: key}) do
     {:ok, new_public_key} = ExSecp256k1.public_key_tweak_add(key, l_l)
 
     Public.new(new_public_key, l_r)

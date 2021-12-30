@@ -33,6 +33,7 @@ defmodule Cryptopunk.DerivationPath do
   def parse(string_path) do
     string_path
     |> String.split("/")
+    |> Enum.map(&String.trim/1)
     |> do_parse()
   end
 
