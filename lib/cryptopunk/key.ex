@@ -12,9 +12,11 @@ defmodule Cryptopunk.Key do
     type = Keyword.fetch!(opts, :type)
     key = Keyword.fetch!(opts, :key)
     chain_code = Keyword.fetch!(opts, :chain_code)
-    # depth = Keyword.fetch!(opts, :depth)
-    # index = Keyword.fetch!(opts, :index)
-    # parent_fingerprint = Keyword.fetch!(opts, :parent_fingerprint)
+    index = Keyword.fetch!(opts, :index)
+
+    parent_key = Keyword.fetch!(opts, :parent_key)
+    depth = parent_key.depth + 1
+    parent_fingerpint = fingerprint(parent_key)
 
     %__MODULE__{
       type: type,
@@ -57,5 +59,10 @@ defmodule Cryptopunk.Key do
   @spec public_from_private(t()) :: binary()
   def public_from_private(%__MODULE__{type: :public}) do
     raise ArgumentError, message: "Can not create public key"
+  end
+
+  defp fingerprint(key) do
+    ## todo
+    key
   end
 end

@@ -41,7 +41,7 @@ defmodule Cryptopunk.Keys do
     new_private_key =
       chain_code
       |> Utils.hmac_sha512(<<ser_public_key::binary, idx::32>>)
-      |> create_from_private_key(private_key)
+      |> create_from_private_key(private_key, idx)
 
     do_derive(new_private_key, tail)
   end
@@ -51,7 +51,7 @@ defmodule Cryptopunk.Keys do
     new_private_key =
       chain_code
       |> Utils.hmac_sha512(<<0::8, key::binary, idx::32>>)
-      |> create_from_private_key(private_key)
+      |> create_from_private_key(private_key, idx)
 
     do_derive(new_private_key, tail)
   end
@@ -63,7 +63,7 @@ defmodule Cryptopunk.Keys do
     new_private_key =
       chain_code
       |> Utils.hmac_sha512(<<ser_public_key::binary, idx::32>>)
-      |> create_from_public_key(public_key)
+      |> create_from_public_key(public_key, idx)
 
     do_derive(new_private_key, tail)
   end
@@ -72,15 +72,25 @@ defmodule Cryptopunk.Keys do
     raise ArgumentError, message: "Can not derive hardened key from public key"
   end
 
-  defp create_from_public_key(<<l_l::binary-32, l_r::binary>>, %Key{key: key, type: :public}) do
+  defp create_from_public_key(
+         <<l_l::binary-32, l_r::binary>>,
+         %Key{key: key, type: :public} = parent_key,
+         idx
+       ) do
     {:ok, new_public_key} = ExSecp256k1.public_key_tweak_add(key, l_l)
 
-    Key.new_public(key: new_public_key, chain_code: l_r)
+    Key.new_public(
+      key: new_public_key,
+      chain_code: l_r,
+      parent_key: parent_key,
+      index: idx
+    )
   end
 
   defp create_from_private_key(
          <<new_key::256, new_chain::binary>>,
-         %Key{key: <<parent_key::256>>, type: :private}
+         %Key{key: <<parent_key::256>>, type: :private} = parent_key,
+         idx
        ) do
     new_private_key =
       new_key
@@ -89,7 +99,12 @@ defmodule Cryptopunk.Keys do
       |> :binary.encode_unsigned()
       |> pad()
 
-    Key.new_private(key: new_private_key, chain_code: new_chain)
+    Key.new_private(
+      key: new_private_key,
+      chain_code: new_chain,
+      parent_key: parent_key,
+      index: idx
+    )
   end
 
   defp pad(binary) when byte_size(binary) >= 32, do: binary
