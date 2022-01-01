@@ -12,7 +12,10 @@ defmodule Cryptopunk.KeysTest do
     key:
       <<50, 8, 92, 222, 223, 155, 132, 50, 53, 227, 114, 79, 88, 11, 248, 24, 239, 76, 236, 39,
         195, 198, 112, 133, 224, 41, 65, 138, 91, 47, 111, 43>>,
-    type: :private
+    type: :private,
+    depth: 0,
+    parent_fingerprint: <<0, 0, 0, 0>>,
+    index: 0
   }
 
   describe "derive/2" do

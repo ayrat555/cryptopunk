@@ -89,7 +89,7 @@ defmodule Cryptopunk.Keys do
 
   defp create_from_private_key(
          <<new_key::256, new_chain::binary>>,
-         %Key{key: <<parent_key::256>>, type: :private} = parent_key,
+         %Key{key: <<parent_key::256>>, type: :private} = parent_key_struct,
          idx
        ) do
     new_private_key =
@@ -102,7 +102,7 @@ defmodule Cryptopunk.Keys do
     Key.new_private(
       key: new_private_key,
       chain_code: new_chain,
-      parent_key: parent_key,
+      parent_key: parent_key_struct,
       index: idx
     )
   end

@@ -14,17 +14,28 @@ defmodule Cryptopunk.Key do
     chain_code = Keyword.fetch!(opts, :chain_code)
     index = Keyword.fetch!(opts, :index)
 
-    parent_key = Keyword.fetch!(opts, :parent_key)
-    depth = parent_key.depth + 1
-    parent_fingerpint = fingerprint(parent_key)
+    {depth, parent_fingerprint} =
+      case Keyword.get(opts, :parent_key) do
+        nil ->
+          depth = Keyword.fetch!(opts, :depth)
+          parent_fingerpint = Keyword.fetch!(opts, :parent_fingerprint)
+
+          {depth, parent_fingerpint}
+
+        parent_key ->
+          depth = parent_key.depth + 1
+          parent_fingerpint = fingerprint(parent_key)
+
+          {depth, parent_fingerpint}
+      end
 
     %__MODULE__{
       type: type,
       key: key,
-      chain_code: chain_code
-      # depth: depth,
-      # index: index,
-      # parent_fingerprint: parent_fingerprint
+      chain_code: chain_code,
+      depth: depth,
+      index: index,
+      parent_fingerprint: parent_fingerprint
     }
   end
 
@@ -42,18 +53,36 @@ defmodule Cryptopunk.Key do
     |> new()
   end
 
+  @spec new_master_private(Keyword.t()) :: t()
+  def new_master_private(opts) do
+    opts
+    |> Keyword.put(:depth, 0)
+    |> Keyword.put(:parent_fingerprint, <<0::32>>)
+    |> Keyword.put(:index, 0)
+    |> new_private()
+  end
+
+  @spec new_master_public(Keyword.t()) :: t()
+  def new_master_public(opts) do
+    opts
+    |> Keyword.put(:depth, 0)
+    |> Keyword.put(:parent_fingerprint, <<0::32>>)
+    |> Keyword.put(:index, 0)
+    |> new_public()
+  end
+
   @spec master_key(binary()) :: Key.t()
   def master_key(seed) do
     <<private_key::binary-32, chain_code::binary-32>> = Utils.hmac_sha512(@master_hmac_key, seed)
 
-    new_private(key: private_key, chain_code: chain_code)
+    new_master_private(key: private_key, chain_code: chain_code)
   end
 
   @spec public_from_private(t()) :: binary()
   def public_from_private(%__MODULE__{key: key, chain_code: chain_code, type: :private}) do
     {public_key, ^key} = :crypto.generate_key(:ecdh, :secp256k1, key)
 
-    new_public(key: public_key, chain_code: chain_code)
+    new_master_public(key: public_key, chain_code: chain_code)
   end
 
   @spec public_from_private(t()) :: binary()
