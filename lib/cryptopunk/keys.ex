@@ -4,7 +4,6 @@ defmodule Cryptopunk.Keys do
   alias Cryptopunk.Utils
 
   import DerivationPath, only: [is_normal: 1, is_hardened: 1]
-  import Integer, only: [is_even: 1, is_odd: 1]
 
   @order 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
 
@@ -36,7 +35,7 @@ defmodule Cryptopunk.Keys do
     ser_public_key =
       private_key
       |> Key.public_from_private()
-      |> ser_p()
+      |> Utils.ser_p()
 
     new_private_key =
       chain_code
@@ -58,7 +57,7 @@ defmodule Cryptopunk.Keys do
 
   def do_derive(%Key{chain_code: chain_code, type: :public} = public_key, [idx | tail])
       when is_normal(idx) do
-    ser_public_key = ser_p(public_key)
+    ser_public_key = Utils.ser_p(public_key)
 
     new_private_key =
       chain_code
@@ -112,13 +111,5 @@ defmodule Cryptopunk.Keys do
   defp pad(binary) do
     bits = (32 - byte_size(binary)) * 8
     <<0::size(bits)>> <> binary
-  end
-
-  defp ser_p(%Key{key: <<0x04::8, x::256, y::256>>, type: :public}) when is_even(y) do
-    <<0x02::8, x::256>>
-  end
-
-  defp ser_p(%Key{key: <<0x04::8, x::256, y::256>>, type: :public}) when is_odd(y) do
-    <<0x03::8, x::256>>
   end
 end

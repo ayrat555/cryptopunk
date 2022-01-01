@@ -18,15 +18,15 @@ defmodule Cryptopunk.Key do
       case Keyword.get(opts, :parent_key) do
         nil ->
           depth = Keyword.fetch!(opts, :depth)
-          parent_fingerpint = Keyword.fetch!(opts, :parent_fingerprint)
+          parent_fingerprint = Keyword.fetch!(opts, :parent_fingerprint)
 
-          {depth, parent_fingerpint}
+          {depth, parent_fingerprint}
 
         parent_key ->
           depth = parent_key.depth + 1
-          parent_fingerpint = fingerprint(parent_key)
+          parent_fingerprint = fingerprint(parent_key)
 
-          {depth, parent_fingerpint}
+          {depth, parent_fingerprint}
       end
 
     %__MODULE__{
@@ -79,10 +79,23 @@ defmodule Cryptopunk.Key do
   end
 
   @spec public_from_private(t()) :: binary()
-  def public_from_private(%__MODULE__{key: key, chain_code: chain_code, type: :private}) do
+  def public_from_private(%__MODULE__{
+        key: key,
+        chain_code: chain_code,
+        depth: depth,
+        parent_fingerprint: parent_fingerprint,
+        index: index,
+        type: :private
+      }) do
     {public_key, ^key} = :crypto.generate_key(:ecdh, :secp256k1, key)
 
-    new_master_public(key: public_key, chain_code: chain_code)
+    new_public(
+      key: public_key,
+      chain_code: chain_code,
+      depth: depth,
+      parent_fingerprint: parent_fingerprint,
+      index: index
+    )
   end
 
   @spec public_from_private(t()) :: binary()
@@ -90,8 +103,16 @@ defmodule Cryptopunk.Key do
     raise ArgumentError, message: "Can not create public key"
   end
 
-  defp fingerprint(key) do
-    ## todo
+  defp fingerprint(%__MODULE__{type: :public} = key) do
+    serialized = Utils.ser_p(key)
+    sha256 = :crypto.hash(:sha256, serialized)
+
+    :crypto.hash(:ripemd160, sha256)
+  end
+
+  defp fingerprint(%__MODULE__{type: :private} = key) do
     key
+    |> public_from_private()
+    |> fingerprint()
   end
 end
