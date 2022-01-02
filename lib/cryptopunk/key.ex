@@ -71,14 +71,14 @@ defmodule Cryptopunk.Key do
     |> new_public()
   end
 
-  @spec master_key(binary()) :: Key.t()
+  @spec master_key(binary()) :: t()
   def master_key(seed) do
     <<private_key::binary-32, chain_code::binary-32>> = Utils.hmac_sha512(@master_hmac_key, seed)
 
     new_master_private(key: private_key, chain_code: chain_code)
   end
 
-  @spec public_from_private(t()) :: binary()
+  @spec public_from_private(t()) :: t() | no_return
   def public_from_private(%__MODULE__{
         key: key,
         chain_code: chain_code,
@@ -98,7 +98,6 @@ defmodule Cryptopunk.Key do
     )
   end
 
-  @spec public_from_private(t()) :: binary()
   def public_from_private(%__MODULE__{type: :public}) do
     raise ArgumentError, message: "Can not create public key"
   end
