@@ -1,4 +1,5 @@
 %{
+  "basefiftyeight": {:git, "https://github.com/ulissesalmeida/b58.git", "77c9603cbac5f308f704ba84eb08da61de15167d", [branch: "remove-prefix"]},
   "earmark_parser": {:hex, :earmark_parser, "1.4.18", "e1b2be73eb08a49fb032a0208bf647380682374a725dfb5b9e510def8397f6f2", [:mix], [], "hexpm", "114a0e85ec3cf9e04b811009e73c206394ffecfcc313e0b346de0d557774ee97"},
   "ex_doc": {:hex, :ex_doc, "0.26.0", "1922164bac0b18b02f84d6f69cab1b93bc3e870e2ad18d5dacb50a9e06b542a3", [:mix], [{:earmark_parser, "~> 1.4.0", [hex: :earmark_parser, repo: "hexpm", optional: false]}, {:makeup_elixir, "~> 0.14", [hex: :makeup_elixir, repo: "hexpm", optional: false]}, {:makeup_erlang, "~> 0.1", [hex: :makeup_erlang, repo: "hexpm", optional: false]}], "hexpm", "2775d66e494a9a48355db7867478ffd997864c61c65a47d31c4949459281c78d"},
   "ex_pbkdf2": {:hex, :ex_pbkdf2, "0.3.0", "10b6b9d86ea81132207685e9efc22ce480974e6563796b330e67693311575f55", [:mix], [{:rustler, "~> 0.23", [hex: :rustler, repo: "hexpm", optional: false]}], "hexpm", "bfd53f6ee68cd1736569dcb02dad85722344d9c4e643e33f42962cf6e04178d2"},

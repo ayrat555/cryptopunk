@@ -103,6 +103,42 @@ defmodule Cryptopunk.Key do
     raise ArgumentError, message: "Can not create public key"
   end
 
+  @spec serialize(t(), binary()) :: String.t()
+  def serialize(%__MODULE__{} = key, version) do
+    key
+    |> serialize_key()
+    |> do_serialize(key, version)
+    |> B58.version_encode58_check!()
+  end
+
+  defp serialize_key(%__MODULE__{type: :private, key: key}) do
+    <<0::8, key::binary>>
+  end
+
+  defp serialize_key(%__MODULE__{type: :public} = public_key) do
+    Utils.ser_p(public_key)
+  end
+
+  defp do_serialize(
+         raw_key,
+         %__MODULE__{
+           chain_code: chain_code,
+           depth: depth,
+           index: index,
+           parent_fingerprint: fingerprint
+         },
+         version
+       ) do
+    <<
+      version::binary,
+      depth::8,
+      fingerprint::binary,
+      index::32,
+      chain_code::binary,
+      raw_key::binary
+    >>
+  end
+
   defp fingerprint(%__MODULE__{type: :public} = key) do
     serialized = Utils.ser_p(key)
     sha256 = :crypto.hash(:sha256, serialized)
