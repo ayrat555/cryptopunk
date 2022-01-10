@@ -28,7 +28,7 @@ defmodule Cryptopunk.MixProject do
   defp deps do
     [
       {:ex_pbkdf2, "~> 0.3"},
-      {:ex_secp256k1, git: "https://github.com/ayrat555/ex_secp256k1", branch: "add"},
+      {:ex_secp256k1, "~> 0.3"},
       {:basefiftyeight, "~> 0.1.0", github: "ulissesalmeida/b58", branch: "remove-prefix"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:jason, "~> 1.2"},
