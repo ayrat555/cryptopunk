@@ -1,7 +1,9 @@
 defmodule Cryptopunk.MnemonicTest do
   use ExUnit.Case
 
+  alias Cryptopunk.Key
   alias Cryptopunk.Mnemonic
+  alias Cryptopunk.Seed
 
   describe "create/1" do
     test "creates mnemonic" do
@@ -31,10 +33,15 @@ defmodule Cryptopunk.MnemonicTest do
         File.read!("test/support/mnemonic_test.json")
         |> Jason.decode!()
 
-      for [entropy, mnemonic, _, _] <- tests do
+      for [entropy, mnemonic, expected_seed, extended_private_key] <- tests do
         {:ok, entropy} = Base.decode16(entropy, case: :lower)
-
         assert mnemonic == Mnemonic.create_from_entropy(entropy)
+
+        seed = Seed.create(mnemonic, "TREZOR")
+        assert expected_seed == Base.encode16(seed, case: :lower)
+
+        master_private_key = Key.master_key(seed)
+        assert extended_private_key == Key.serialize(master_private_key, <<4, 136, 173, 228>>)
       end
     end
   end
