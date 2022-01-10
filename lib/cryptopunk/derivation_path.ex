@@ -56,6 +56,9 @@ defmodule Cryptopunk.DerivationPath do
      ]}
   end
 
+  @spec two_power_31() :: non_neg_integer()
+  def two_power_31, do: @two_power_31
+
   defp do_parse([type, purpose, coin_type, account, change, address_index]) do
     with {:ok, type} <- parse_type(type),
          {:ok, purpose} <- parse_int(purpose, type: :purpose, hardened: true),

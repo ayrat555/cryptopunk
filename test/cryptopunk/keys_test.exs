@@ -95,5 +95,56 @@ defmodule Cryptopunk.KeysTest do
         Keys.derive(public_key, {:public, [2_147_483_649, 1]})
       end
     end
+
+    test "bip32 tests" do
+      seed_data =
+        "test/support/bip32_test.json"
+        |> File.read!()
+        |> Jason.decode!()
+
+      for {raw_seed, tests} <- seed_data do
+        seed = Base.decode16!(raw_seed, case: :lower)
+        private_key = Key.master_key(seed) |> IO.inspect()
+
+        for [path, xpub, xpriv] <- tests do
+          parsed_path = parse_path(path)
+
+          derived_private_key = Keys.derive(private_key, parsed_path)
+          serialized_key = Key.serialize(derived_private_key, <<4, 136, 173, 228>>)
+
+          assert (serialized_key == xpriv) |> IO.inspect()
+        end
+      end
+    end
+  end
+
+  defp parse_path(path) do
+    ["m" | idxs] = parts = String.split(path, "/")
+
+    formatted_idxs =
+      idxs
+      |> Enum.reverse()
+      |> format_idxs()
+
+    {:private, formatted_idxs}
+  end
+
+  defp format_idxs(idxs, acc \\ [])
+
+  defp format_idxs([], acc), do: acc
+
+  defp format_idxs([current_id | tail], acc) do
+    formatted_id =
+      if String.ends_with?(current_id, "H") do
+        {id, "H"} = Integer.parse(current_id)
+
+        id + DerivationPath.two_power_31()
+      else
+        {id, ""} = Integer.parse(current_id)
+
+        id
+      end
+
+    format_idxs(tail, [formatted_id | acc])
   end
 end
