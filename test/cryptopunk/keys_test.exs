@@ -113,10 +113,10 @@ defmodule Cryptopunk.KeysTest do
           serialized_key = Key.serialize(derived_private_key, <<4, 136, 173, 228>>)
           assert serialized_key == xpriv
 
-          # derived_public_key = Keys.derive(private_key, {:public, parsed_path})
-          # serialized_key = Key.serialize(derived_private_key, <<4, 136, 178, 30>>)
+          derived_public_key = Keys.derive(private_key, {:public, parsed_path})
+          serialized_key = Key.serialize(derived_public_key, <<4, 136, 178, 30>>)
 
-          # assert serialized_key == xpub
+          assert serialized_key == xpub
         end
       end
     end
