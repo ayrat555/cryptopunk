@@ -4,6 +4,7 @@ defmodule Cryptopunk.Key do
   """
   defstruct [:type, :key, :chain_code, :depth, :index, :parent_fingerprint]
 
+  alias Cryptopunk.B58
   alias Cryptopunk.Utils
 
   @type t :: %__MODULE__{}
