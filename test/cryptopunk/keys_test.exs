@@ -31,9 +31,7 @@ defmodule Cryptopunk.KeysTest do
                    45, 104, 58, 119, 114, 121, 238, 155, 215, 239, 189, 37, 236, 27, 70>>,
                index: 0,
                depth: 5,
-               parent_fingerprint:
-                 <<205, 94, 166, 92, 183, 18, 106, 98, 74, 117, 193, 131, 117, 40, 80, 237, 231,
-                   107, 114, 123>>,
+               parent_fingerprint: <<205, 94, 166, 92>>,
                type: :private
              } == Keys.derive(@private_key, path)
     end
@@ -52,9 +50,7 @@ defmodule Cryptopunk.KeysTest do
                    56, 83, 210, 98, 146, 155, 159, 184, 134, 183, 227, 69, 40, 106, 142, 42, 28,
                    130, 36, 216, 210, 243, 83, 206, 189, 167, 217, 243, 15, 89, 183, 17, 231, 243,
                    38, 213, 158, 97, 206, 197, 70, 213, 10, 189, 84, 112, 190>>,
-               parent_fingerprint:
-                 <<205, 94, 166, 92, 183, 18, 106, 98, 74, 117, 193, 131, 117, 40, 80, 237, 231,
-                   107, 114, 123>>,
+               parent_fingerprint: <<205, 94, 166, 92>>,
                type: :public
              } == Keys.derive(@private_key, path)
     end
@@ -73,9 +69,7 @@ defmodule Cryptopunk.KeysTest do
                    72, 58, 150, 84, 55, 52, 40, 212, 64, 158, 65, 49>>,
                depth: 2,
                index: 1,
-               parent_fingerprint:
-                 <<28, 178, 137, 192, 27, 167, 175, 230, 27, 61, 55, 82, 153, 71, 19, 76, 54, 112,
-                   20, 226>>,
+               parent_fingerprint: <<28, 178, 137, 192>>,
                type: :public
              } == Keys.derive(public_key, {:public, [1, 1]})
     end
