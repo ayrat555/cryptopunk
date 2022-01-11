@@ -142,7 +142,9 @@ defmodule Cryptopunk.Key do
     serialized = Utils.ser_p(key)
     sha256 = :crypto.hash(:sha256, serialized)
 
-    :crypto.hash(:ripemd160, sha256)
+    <<fingerprint::binary-4, _rest::binary>> = :crypto.hash(:ripemd160, sha256)
+
+    fingerprint
   end
 
   defp fingerprint(%__MODULE__{type: :private} = key) do

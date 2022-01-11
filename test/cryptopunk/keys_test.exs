@@ -104,29 +104,33 @@ defmodule Cryptopunk.KeysTest do
 
       for {raw_seed, tests} <- seed_data do
         seed = Base.decode16!(raw_seed, case: :lower)
-        private_key = Key.master_key(seed) |> IO.inspect()
+        private_key = Key.master_key(seed)
 
         for [path, xpub, xpriv] <- tests do
           parsed_path = parse_path(path)
 
-          derived_private_key = Keys.derive(private_key, parsed_path)
+          derived_private_key = Keys.derive(private_key, {:private, parsed_path})
           serialized_key = Key.serialize(derived_private_key, <<4, 136, 173, 228>>)
+          assert serialized_key == xpriv
 
-          assert (serialized_key == xpriv) |> IO.inspect()
+          # derived_public_key = Keys.derive(private_key, {:public, parsed_path})
+          # serialized_key = Key.serialize(derived_private_key, <<4, 136, 178, 30>>)
+
+          # assert serialized_key == xpub
         end
       end
     end
   end
 
   defp parse_path(path) do
-    ["m" | idxs] = parts = String.split(path, "/")
+    ["m" | idxs] = String.split(path, "/")
 
     formatted_idxs =
       idxs
       |> Enum.reverse()
       |> format_idxs()
 
-    {:private, formatted_idxs}
+    formatted_idxs
   end
 
   defp format_idxs(idxs, acc \\ [])
