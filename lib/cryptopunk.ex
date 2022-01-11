@@ -95,8 +95,8 @@ defmodule Cryptopunk do
   def serialize_key(key, version), do: Key.serialize(key, version)
 
   @doc """
-  Serializes extended key
-  See https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#Serialization_format
+  Derives key
+  https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
 
   ## Examples
 
