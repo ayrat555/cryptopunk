@@ -27,13 +27,14 @@ defmodule Cryptopunk.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:basefiftyeight, "~> 0.1.0", github: "ulissesalmeida/b58", branch: "remove-prefix"},
+      {:ex_keccak, "~> 0.3"},
       {:ex_pbkdf2, "~> 0.3"},
       {:ex_secp256k1, "~> 0.3"},
-      {:ex_keccak, "~> 0.3"},
-      {:basefiftyeight, "~> 0.1.0", github: "ulissesalmeida/b58", branch: "remove-prefix"},
-      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:jason, "~> 1.3"},
-      {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end
 end

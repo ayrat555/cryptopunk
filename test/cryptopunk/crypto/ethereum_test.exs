@@ -25,7 +25,7 @@ defmodule Cryptopunk.Crypto.EthereumTest do
 
   test "correct wallet generation", %{master_key: master_key, path: path, expected: expected} do
     Enum.map(0..1, fn n ->
-      {:ok, parsed_path} = DerivationPath.parse(path <> "/#{n}") |> IO.inspect()
+      {:ok, parsed_path} = DerivationPath.parse(path <> "/#{n}")
 
       derived_key = Keys.derive(master_key, parsed_path)
 

@@ -1,4 +1,9 @@
 defmodule Cryptopunk.DerivationPath do
+  @moduledoc """
+  Utility functions to work with deriviation path
+
+  See https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
+  """
   defstruct [:type, :purpose, :coin_type, :account, :change, :address_index]
 
   @type t :: %__MODULE__{}

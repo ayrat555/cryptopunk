@@ -1,4 +1,9 @@
 defmodule Cryptopunk.Mnemonic do
+  @moduledoc """
+  Implements mnemonic generation logic.
+
+  See https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
+  """
   @word_number_to_entropy_bits %{12 => 128, 15 => 160, 18 => 192, 21 => 224, 24 => 256}
   @word_numbers Map.keys(@word_number_to_entropy_bits)
   @words :cryptopunk

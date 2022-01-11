@@ -1,4 +1,9 @@
 defmodule Cryptopunk.Keys do
+  @moduledoc """
+  Implements key derivation logic.
+
+  See https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
+  """
   alias Cryptopunk.DerivationPath
   alias Cryptopunk.Key
   alias Cryptopunk.Utils

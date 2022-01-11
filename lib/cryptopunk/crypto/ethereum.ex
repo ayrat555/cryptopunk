@@ -1,4 +1,7 @@
 defmodule Cryptopunk.Crypto.Ethereum do
+  @moduledoc """
+  Ethereum address generation logic
+  """
   alias Cryptopunk.Key
 
   @spec address(Key.t()) :: String.t()

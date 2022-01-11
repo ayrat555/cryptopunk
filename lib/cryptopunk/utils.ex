@@ -1,4 +1,7 @@
 defmodule Cryptopunk.Utils do
+  @moduledoc """
+  Utility functions
+  """
   import Integer, only: [is_even: 1, is_odd: 1]
 
   alias Cryptopunk.Key

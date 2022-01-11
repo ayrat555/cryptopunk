@@ -1,4 +1,7 @@
 defmodule Cryptopunk.Key do
+  @moduledoc """
+  Utility functions to work with keys
+  """
   defstruct [:type, :key, :chain_code, :depth, :index, :parent_fingerprint]
 
   alias Cryptopunk.Utils
