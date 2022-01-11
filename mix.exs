@@ -8,7 +8,7 @@ defmodule Cryptopunk.MixProject do
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      description: "Placeholder for now",
+      description: "Hierarchical deterministic wallet (HD Wallet)",
       package: [
         maintainers: ["Ayrat Badykov"],
         licenses: ["MIT"],
