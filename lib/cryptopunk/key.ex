@@ -91,7 +91,7 @@ defmodule Cryptopunk.Key do
         index: index,
         type: :private
       }) do
-    {public_key, ^key} = :crypto.generate_key(:ecdh, :secp256k1, key)
+    {:ok, public_key} = ExSecp256k1.create_public_key(key)
 
     new_public(
       key: public_key,
