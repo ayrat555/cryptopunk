@@ -91,7 +91,7 @@ defmodule Cryptopunk.Key do
         index: index,
         type: :private
       }) do
-    {public_key, ^key} = :crypto.generate_key(:ecdh, :secp256k1, key)
+    {:ok, public_key} = ExSecp256k1.create_public_key(key)
 
     new_public(
       key: public_key,
@@ -119,7 +119,7 @@ defmodule Cryptopunk.Key do
   end
 
   defp serialize_key(%__MODULE__{type: :public} = public_key) do
-    Utils.ser_p(public_key)
+    Utils.compress_public_key(public_key)
   end
 
   defp do_serialize(
@@ -143,7 +143,7 @@ defmodule Cryptopunk.Key do
   end
 
   defp fingerprint(%__MODULE__{type: :public} = key) do
-    serialized = Utils.ser_p(key)
+    serialized = Utils.compress_public_key(key)
     sha256 = :crypto.hash(:sha256, serialized)
 
     <<fingerprint::binary-4, _rest::binary>> = :crypto.hash(:ripemd160, sha256)

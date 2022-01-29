@@ -1,9 +1,9 @@
-defmodule Cryptopunk.KeysTest do
+defmodule Cryptopunk.DerivationTest do
   use ExUnit.Case
 
   alias Cryptopunk.Key
-  alias Cryptopunk.Keys
-  alias Cryptopunk.DerivationPath
+  alias Cryptopunk.Derivation
+  alias Cryptopunk.Derivation.Path
 
   @private_key %Cryptopunk.Key{
     chain_code:
@@ -20,7 +20,7 @@ defmodule Cryptopunk.KeysTest do
 
   describe "derive/2" do
     test "derives private key from private key" do
-      {:ok, path} = DerivationPath.parse("m / 44' / 0' / 0' / 0 / 0")
+      {:ok, path} = Path.parse("m / 44' / 0' / 0' / 0 / 0")
 
       assert %Cryptopunk.Key{
                chain_code:
@@ -33,11 +33,11 @@ defmodule Cryptopunk.KeysTest do
                depth: 5,
                parent_fingerprint: <<205, 94, 166, 92>>,
                type: :private
-             } == Keys.derive(@private_key, path)
+             } == Derivation.derive(@private_key, path)
     end
 
     test "derives public key from private key" do
-      {:ok, path} = DerivationPath.parse("M / 44' / 0' / 0' / 0 / 0")
+      {:ok, path} = Path.parse("M / 44' / 0' / 0' / 0 / 0")
 
       assert %Cryptopunk.Key{
                chain_code:
@@ -52,7 +52,7 @@ defmodule Cryptopunk.KeysTest do
                    38, 213, 158, 97, 206, 197, 70, 213, 10, 189, 84, 112, 190>>,
                parent_fingerprint: <<205, 94, 166, 92>>,
                type: :public
-             } == Keys.derive(@private_key, path)
+             } == Derivation.derive(@private_key, path)
     end
 
     test "derives public key from public key" do
@@ -71,14 +71,14 @@ defmodule Cryptopunk.KeysTest do
                index: 1,
                parent_fingerprint: <<28, 178, 137, 192>>,
                type: :public
-             } == Keys.derive(public_key, {:public, [1, 1]})
+             } == Derivation.derive(public_key, {:public, [1, 1]})
     end
 
     test "fails to derive private key from public key" do
       public_key = Key.public_from_private(@private_key)
 
       assert_raise ArgumentError, "Can not derive private key from public key", fn ->
-        Keys.derive(public_key, {:private, [1, 1]})
+        Derivation.derive(public_key, {:private, [1, 1]})
       end
     end
 
@@ -86,7 +86,7 @@ defmodule Cryptopunk.KeysTest do
       public_key = Key.public_from_private(@private_key)
 
       assert_raise ArgumentError, "Can not derive hardened key from public key", fn ->
-        Keys.derive(public_key, {:public, [2_147_483_649, 1]})
+        Derivation.derive(public_key, {:public, [2_147_483_649, 1]})
       end
     end
 
@@ -103,11 +103,11 @@ defmodule Cryptopunk.KeysTest do
         for [path, xpub, xpriv] <- tests do
           parsed_path = parse_path(path)
 
-          derived_private_key = Keys.derive(private_key, {:private, parsed_path})
+          derived_private_key = Derivation.derive(private_key, {:private, parsed_path})
           serialized_key = Key.serialize(derived_private_key, <<4, 136, 173, 228>>)
           assert serialized_key == xpriv
 
-          derived_public_key = Keys.derive(private_key, {:public, parsed_path})
+          derived_public_key = Derivation.derive(private_key, {:public, parsed_path})
           serialized_key = Key.serialize(derived_public_key, <<4, 136, 178, 30>>)
 
           assert serialized_key == xpub
@@ -136,7 +136,7 @@ defmodule Cryptopunk.KeysTest do
       if String.ends_with?(current_id, "H") do
         {id, "H"} = Integer.parse(current_id)
 
-        id + DerivationPath.two_power_31()
+        id + Path.two_power_31()
       else
         {id, ""} = Integer.parse(current_id)
 

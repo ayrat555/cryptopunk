@@ -2,7 +2,6 @@ defmodule Cryptopunk.Utils do
   @moduledoc """
   Utility functions
   """
-  import Integer, only: [is_even: 1, is_odd: 1]
 
   alias Cryptopunk.Key
 
@@ -10,11 +9,9 @@ defmodule Cryptopunk.Utils do
     :crypto.mac(:hmac, :sha512, key, data)
   end
 
-  def ser_p(%Key{key: <<0x04::8, x::256, y::256>>, type: :public}) when is_even(y) do
-    <<0x02::8, x::256>>
-  end
+  def compress_public_key(%Key{key: key, type: :public}) do
+    {:ok, compressed} = ExSecp256k1.public_key_compress(key)
 
-  def ser_p(%Key{key: <<0x04::8, x::256, y::256>>, type: :public}) when is_odd(y) do
-    <<0x03::8, x::256>>
+    compressed
   end
 end

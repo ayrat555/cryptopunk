@@ -1,20 +1,20 @@
-defmodule Cryptopunk.Keys do
+defmodule Cryptopunk.Derivation do
   @moduledoc """
   Implements key derivation logic.
 
   See https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
   """
-  alias Cryptopunk.DerivationPath
+  alias Cryptopunk.Derivation.Path
   alias Cryptopunk.Key
   alias Cryptopunk.Utils
 
-  import DerivationPath, only: [is_normal: 1, is_hardened: 1]
+  import Path, only: [is_normal: 1, is_hardened: 1]
 
   @order 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
 
-  @spec derive(Key.t(), DerivationPath.t() | DerivationPath.raw_path()) :: Key.t()
-  def derive(key, %DerivationPath{} = path) do
-    raw_path = DerivationPath.to_raw_path(path)
+  @spec derive(Key.t(), Path.t() | Path.raw_path()) :: Key.t()
+  def derive(key, %Path{} = path) do
+    raw_path = Path.to_raw_path(path)
 
     derive(key, raw_path)
   end
@@ -40,7 +40,7 @@ defmodule Cryptopunk.Keys do
     ser_public_key =
       private_key
       |> Key.public_from_private()
-      |> Utils.ser_p()
+      |> Utils.compress_public_key()
 
     new_private_key =
       chain_code
@@ -62,7 +62,7 @@ defmodule Cryptopunk.Keys do
 
   def do_derive(%Key{chain_code: chain_code, type: :public} = public_key, [idx | tail])
       when is_normal(idx) do
-    ser_public_key = Utils.ser_p(public_key)
+    ser_public_key = Utils.compress_public_key(public_key)
 
     new_private_key =
       chain_code

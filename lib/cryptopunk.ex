@@ -10,9 +10,9 @@ defmodule Cryptopunk do
 
   """
 
-  alias Cryptopunk.DerivationPath
+  alias Cryptopunk.Derivation
+  alias Cryptopunk.Derivation.Path
   alias Cryptopunk.Key
-  alias Cryptopunk.Keys
   alias Cryptopunk.Mnemonic
   alias Cryptopunk.Seed
 
@@ -105,8 +105,8 @@ defmodule Cryptopunk do
   iex> seed |> Cryptopunk.master_key_from_seed() |> Cryptopunk.derive_key(path)
   %Cryptopunk.Key{chain_code: <<166, 125, 2, 213, 77, 88, 124, 145, 241, 251, 83, 163, 21, 11, 20, 34, 158, 157, 179, 147, 162, 212, 148, 89, 28, 92, 68, 126, 215, 79, 147, 159>>, depth: 5, index: 0, key: <<214, 231, 94, 203, 167, 219, 125, 43, 251, 91, 147, 51, 32, 146, 186, 215, 58, 45, 104, 58, 119, 114, 121, 238, 155, 215, 239, 189, 37, 236, 27, 70>>, parent_fingerprint: <<205, 94, 166, 92>>, type: :private}
   """
-  @spec derive_key(Key.t(), DerivationPath.t() | DerivationPath.raw_path()) :: Key.t()
-  def derive_key(key, path), do: Keys.derive(key, path)
+  @spec derive_key(Key.t(), Path.t() | Path.raw_path()) :: Key.t()
+  def derive_key(key, path), do: Derivation.derive(key, path)
 
   @doc """
   Parses derivation path
@@ -114,8 +114,8 @@ defmodule Cryptopunk do
 
   ## Examples
   iex> Cryptopunk.parse_path("m / 44' / 0' / 0' / 0 / 0")
-  {:ok, %Cryptopunk.DerivationPath{account: 0, address_index: 0, change: 0, coin_type: 0, purpose: 44, type: :private}}
+  {:ok, %Cryptopunk.Derivation.Path{account: 0, address_index: 0, change: 0, coin_type: 0, purpose: 44, type: :private}}
   """
-  @spec parse_path(String.t()) :: {:error, any()} | {:ok, DerivationPath.t()}
-  def parse_path(path), do: DerivationPath.parse(path)
+  @spec parse_path(String.t()) :: {:error, any()} | {:ok, Path.t()}
+  def parse_path(path), do: Path.parse(path)
 end
