@@ -1,4 +1,4 @@
-defmodule Cryptopunk.DerivationPath do
+defmodule Cryptopunk.Derivation.Path do
   @moduledoc """
   Utility functions to work with deriviation path
 

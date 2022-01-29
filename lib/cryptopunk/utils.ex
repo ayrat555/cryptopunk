@@ -9,7 +9,7 @@ defmodule Cryptopunk.Utils do
     :crypto.mac(:hmac, :sha512, key, data)
   end
 
-  def ser_p(%Key{key: key, type: :public}) do
+  def compress_public_key(%Key{key: key, type: :public}) do
     {:ok, compressed} = ExSecp256k1.public_key_compress(key)
 
     compressed

@@ -2,9 +2,9 @@ defmodule Cryptopunk.Crypto.EthereumTest do
   use ExUnit.Case
 
   alias Cryptopunk.Crypto.Ethereum
-  alias Cryptopunk.DerivationPath
+  alias Cryptopunk.Derivation
+  alias Cryptopunk.Derivation.Path
   alias Cryptopunk.Key
-  alias Cryptopunk.Keys
   alias Cryptopunk.Seed
 
   setup do
@@ -25,9 +25,9 @@ defmodule Cryptopunk.Crypto.EthereumTest do
 
   test "correct wallet generation", %{master_key: master_key, path: path, expected: expected} do
     Enum.map(0..1, fn n ->
-      {:ok, parsed_path} = DerivationPath.parse(path <> "/#{n}")
+      {:ok, parsed_path} = Path.parse(path <> "/#{n}")
 
-      derived_key = Keys.derive(master_key, parsed_path)
+      derived_key = Derivation.derive(master_key, parsed_path)
 
       assert expected[n] == Ethereum.address(derived_key)
     end)
