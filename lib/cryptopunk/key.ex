@@ -114,6 +114,41 @@ defmodule Cryptopunk.Key do
     |> B58.version_encode58_check!()
   end
 
+  @spec deserialize(binary()) :: t()
+  def deserialize(<<"xpub", _rest::binary>> = encoded_key) do
+    do_deserialize(encoded_key, :public)
+  end
+
+  def deserialize(<<"xprv", _rest::binary>> = encoded_key) do
+    do_deserialize(encoded_key, :private)
+  end
+
+  defp do_deserialize(encoded_key, type) do
+    <<
+      _version_number::binary-4,
+      depth::8,
+      fingerprint::binary-4,
+      index::32,
+      chain_code::binary-32,
+      key::binary-33
+    >> = B58.version_decode58_check!(encoded_key)
+
+    %__MODULE__{
+      type: type,
+      key: deserialize_key(key, type),
+      chain_code: chain_code,
+      depth: depth,
+      index: index,
+      parent_fingerprint: fingerprint
+    }
+  end
+
+  defp deserialize_key(<<0::8, key::binary>>, :private), do: key
+
+  defp deserialize_key(key, :public) do
+    Utils.decompress_public_key(key)
+  end
+
   defp serialize_key(%__MODULE__{type: :private, key: key}) do
     <<0::8, key::binary>>
   end
@@ -144,9 +179,9 @@ defmodule Cryptopunk.Key do
 
   defp fingerprint(%__MODULE__{type: :public} = key) do
     serialized = Utils.compress_public_key(key)
-    sha256 = :crypto.hash(:sha256, serialized)
+    sha256 = Utils.sha256_hash(serialized)
 
-    <<fingerprint::binary-4, _rest::binary>> = :crypto.hash(:ripemd160, sha256)
+    <<fingerprint::binary-4, _rest::binary>> = Utils.ripemd160_hash(sha256)
 
     fingerprint
   end

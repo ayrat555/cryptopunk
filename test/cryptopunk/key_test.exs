@@ -26,7 +26,7 @@ defmodule Cryptopunk.KeyTest do
     end
   end
 
-  describe "serialize/1" do
+  describe "serialize/1 and deserialize/1" do
     test "serialization tests" do
       tests = [
         {"000102030405060708090a0b0c0d0e0f",
@@ -48,6 +48,9 @@ defmodule Cryptopunk.KeyTest do
 
         assert ^ser_private_key = Key.serialize(private_key, <<4, 136, 173, 228>>)
         assert ^ser_public_key = Key.serialize(public_key, <<4, 136, 178, 30>>)
+
+        assert private_key == Key.deserialize(ser_private_key)
+        assert public_key == Key.deserialize(ser_public_key)
       end
     end
   end

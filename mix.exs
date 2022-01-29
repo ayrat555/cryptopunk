@@ -29,9 +29,7 @@ defmodule Cryptopunk.MixProject do
     [
       {:ex_keccak, "~> 0.3"},
       {:ex_pbkdf2, "~> 0.3"},
-      {:ex_secp256k1,
-       git: "https://github.com/ayrat555/ex_secp256k1",
-       branch: "ayrat555/add-public-key-compression"},
+      {:ex_secp256k1, "~> 0.3"},
       {:jason, "~> 1.3"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
