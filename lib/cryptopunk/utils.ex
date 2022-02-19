@@ -33,4 +33,11 @@ defmodule Cryptopunk.Utils do
   def ripemd160_hash(binary) do
     :crypto.hash(:ripemd160, binary)
   end
+
+  @spec hash160(binary()) :: binary()
+  def hash160(binary) do
+    binary
+    |> sha256_hash()
+    |> ripemd160_hash()
+  end
 end

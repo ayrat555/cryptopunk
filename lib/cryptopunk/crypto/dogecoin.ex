@@ -15,6 +15,6 @@ defmodule Cryptopunk.Crypto.Dogecoin do
   def address(private_or_public_key, net) do
     version_byte = Map.fetch!(@version_bytes, net)
 
-    Bitcoin.address(private_or_public_key, version_byte)
+    Bitcoin.legacy_address(private_or_public_key, version_byte)
   end
 end
