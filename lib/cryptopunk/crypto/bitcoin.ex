@@ -1,6 +1,8 @@
 defmodule Cryptopunk.Crypto.Bitcoin do
   @moduledoc """
-  Bitcoin address generation logic
+  Bitcoin address generation logic.
+
+  All addresses use compressed public keys.
   """
 
   alias Cryptopunk.Crypto.Bitcoin.Bech32Address
@@ -8,16 +10,75 @@ defmodule Cryptopunk.Crypto.Bitcoin do
   alias Cryptopunk.Crypto.Bitcoin.P2shP2wpkhAddress
   alias Cryptopunk.Key
 
+  @doc """
+  Generate a legacy (P2PKH) address.
+
+  It accepts two parameters:
+
+  - public or private key. if a private key is provided, it will be converted to public key.
+  - network (`:mainnet` or `:testnet`)
+
+  Examples:
+
+      iex> private_key = %Cryptopunk.Key{key: <<16, 42, 130, 92, 247, 244, 62, 96, 24, 129, 187, 141, 124, 42, 176, 116, 234, 171, 184, 107, 3, 229, 255, 72, 30, 116, 79, 243, 36, 142, 184, 24>>, type: :private}
+      iex> Cryptopunk.Crypto.Bitcoin.legacy_address(private_key, :mainnet)
+      "1JfhAmwWjbGJ3RW2hjoRdmpKaKXgCjSwEL"
+
+      iex> public_key = %Cryptopunk.Key{key: <<4, 57, 163, 96, 19, 48, 21, 151, 218, 239, 65, 251, 229, 147, 160, 44, 197, 19, 208, 181, 85, 39, 236, 45, 241, 5, 14, 46, 143, 244, 156, 133, 194, 60, 190, 125, 237, 14, 124, 230, 165, 148, 137, 107, 143, 98, 136, 143, 219, 197, 200, 130, 19, 5, 226, 234, 66, 191, 1, 227, 115, 0, 17, 98, 129>>, type: :public}
+      iex> Cryptopunk.Crypto.Bitcoin.legacy_address(public_key, :testnet)
+      "mkHGce7dctSxHgaWSSbmmrRWsZfzz7MxMk"
+  """
   @spec legacy_address(Key.t(), atom() | binary()) :: String.t()
   def legacy_address(private_or_public_key, net_or_version_byte) do
     address(private_or_public_key, net_or_version_byte, :legacy)
   end
 
-  @spec legacy_address(Key.t(), atom() | binary()) :: String.t()
+  @doc """
+  Generate a 'Pay to Witness Public Key Hash nested in BIP16 Pay to Script Hash' (P2WPKH-P2SH) address
+
+  It accepts two parameters:
+
+  - public or private key. if a private key is provided, it will be converted to public key.
+  - network (`:mainnet` or `:testnet`)
+
+  Examples:
+
+      iex> private_key = %Cryptopunk.Key{key: <<16, 42, 130, 92, 247, 244, 62, 96, 24, 129, 187, 141, 124, 42, 176, 116, 234, 171, 184, 107, 3, 229, 255, 72, 30, 116, 79, 243, 36, 142, 184, 24>>, type: :private}
+      iex> Cryptopunk.Crypto.Bitcoin.p2sh_p2wpkh_address(private_key, :mainnet)
+      "397Y4wveZFbdEo8rTzXSPHWYuamfKs2GWd"
+
+      iex> public_key = %Cryptopunk.Key{key: <<4, 57, 163, 96, 19, 48, 21, 151, 218, 239, 65, 251, 229, 147, 160, 44, 197, 19, 208, 181, 85, 39, 236, 45, 241, 5, 14, 46, 143, 244, 156, 133, 194, 60, 190, 125, 237, 14, 124, 230, 165, 148, 137, 107, 143, 98, 136, 143, 219, 197, 200, 130, 19, 5, 226, 234, 66, 191, 1, 227, 115, 0, 17, 98, 129>>, type: :public}
+      iex> Cryptopunk.Crypto.Bitcoin.p2sh_p2wpkh_address(public_key, :testnet)
+      "2NFNttcoWjE7WUcByBqpPKkcjg8wzgnU5HE"
+  """
+  @spec p2sh_p2wpkh_address(Key.t(), atom() | binary()) :: String.t()
   def p2sh_p2wpkh_address(private_or_public_key, net_or_version_byte) do
     address(private_or_public_key, net_or_version_byte, :p2sh_p2wpkh)
   end
 
+  @doc """
+  Generate a bech32 segwit address
+
+  It accepts three parameters:
+
+  - public or private key. if a private key is provided, it will be converted to public key.
+  - network (`:mainnet`, `:testnet` or `:regtest`)
+  - optional parameters. Currently the only allowed parameter is a witness version (`:version`).
+
+  Examples:
+
+      iex> private_key = %Cryptopunk.Key{key: <<16, 42, 130, 92, 247, 244, 62, 96, 24, 129, 187, 141, 124, 42, 176, 116, 234, 171, 184, 107, 3, 229, 255, 72, 30, 116, 79, 243, 36, 142, 184, 24>>, type: :private}
+      iex> Cryptopunk.Crypto.Bitcoin.bech32_address(private_key, :mainnet)
+      "bc1qc89hn5kmwxl804yfqmd97st3trarqr24y2hpqh"
+
+      iex> private_key = %Cryptopunk.Key{key: <<16, 42, 130, 92, 247, 244, 62, 96, 24, 129, 187, 141, 124, 42, 176, 116, 234, 171, 184, 107, 3, 229, 255, 72, 30, 116, 79, 243, 36, 142, 184, 24>>, type: :private}
+      iex> Cryptopunk.Crypto.Bitcoin.bech32_address(private_key, :mainnet, version: 1)
+      "bc1pc89hn5kmwxl804yfqmd97st3trarqr246gsxg7"
+
+      iex> public_key = %Cryptopunk.Key{key: <<4, 57, 163, 96, 19, 48, 21, 151, 218, 239, 65, 251, 229, 147, 160, 44, 197, 19, 208, 181, 85, 39, 236, 45, 241, 5, 14, 46, 143, 244, 156, 133, 194, 60, 190, 125, 237, 14, 124, 230, 165, 148, 137, 107, 143, 98, 136, 143, 219, 197, 200, 130, 19, 5, 226, 234, 66, 191, 1, 227, 115, 0, 17, 98, 129>>, type: :public}
+      iex> Cryptopunk.Crypto.Bitcoin.bech32_address(public_key, :testnet)
+      "tb1qx3ppj0smkuy3d6g525sh9n2w9k7fm7q3vh5ssm"
+  """
   @spec bech32_address(Key.t(), atom() | String.t(), Keyword.t()) :: String.t()
   def bech32_address(private_or_public_key, net_or_hrp, opts \\ []) do
     address(private_or_public_key, net_or_hrp, :bech32, opts)

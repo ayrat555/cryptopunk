@@ -7,6 +7,8 @@ defmodule Cryptopunk.Crypto.EthereumTest do
   alias Cryptopunk.Key
   alias Cryptopunk.Seed
 
+  doctest Ethereum
+
   setup do
     master_key =
       "nurse grid sister metal flock choice system control about mountain sister rapid hundred render shed chicken print cover tape sister zero bronze tattoo stairs"

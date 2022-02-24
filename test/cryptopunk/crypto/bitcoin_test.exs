@@ -6,6 +6,8 @@ defmodule Cryptopunk.Crypto.BitcoinTest do
   alias Cryptopunk.Derivation.Path
   alias Cryptopunk.Key
 
+  doctest Bitcoin
+
   describe "legacy_address/2" do
     test "generates legacy_address from extended public key" do
       public_key =
