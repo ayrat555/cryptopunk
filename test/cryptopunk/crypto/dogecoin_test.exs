@@ -2,31 +2,36 @@ defmodule Cryptopunk.Crypto.DogecoinTest do
   use ExUnit.Case
 
   alias Cryptopunk.Crypto.Dogecoin
-  alias Cryptopunk.Key
+
+  doctest Dogecoin
 
   setup do
-    private_key =
-      Key.new_master_private(
-        key:
-          <<219, 162, 11, 89, 4, 244, 221, 147, 87, 42, 73, 58, 253, 66, 20, 243, 17, 214, 97,
-            139, 0, 207, 143, 248, 75, 234, 153, 110, 70, 156, 58, 123>>,
-        chain_code:
-          <<77, 200, 226, 224, 92, 36, 49, 31, 19, 168, 206, 8, 212, 142, 54, 191, 170, 82, 7, 37,
-            208, 240, 11, 182, 255, 251, 254, 150, 242, 28, 201, 174>>
-      )
+    mnemonic =
+      "hamster citizen citizen response rival want climb comfort bulk exist skill receive shrimp meat lumber"
 
-    {:ok, %{private_key: private_key}}
+    master_key =
+      mnemonic
+      |> Cryptopunk.create_seed()
+      |> Cryptopunk.master_key_from_seed()
+
+    %{master_key: master_key}
   end
 
-  test "generates testnet dogecoin address", %{private_key: private_key} do
-    address = Dogecoin.address(private_key, :testnet)
+  test "generates testnet dogecoin address", %{master_key: master_key} do
+    {:ok, path} = Cryptopunk.parse_path("m/44'/1'/0'/0/0")
+    key = Cryptopunk.derive_key(master_key, path)
 
-    assert "nhjk8mSKqzNLcgtuLvPWBeRqjJ216uyV6b" == address
+    address = Dogecoin.address(key, :testnet)
+
+    assert "nhA8G4Ds2nam712vnLiXitLAyLhLHhL9M6" == address
   end
 
-  test "generates mainnet dogecoin address", %{private_key: private_key} do
-    address = Dogecoin.address(private_key, :mainnet)
+  test "generates mainnet dogecoin address", %{master_key: master_key} do
+    {:ok, path} = Cryptopunk.parse_path("m/44'/3'/0'/0/0")
+    key = Cryptopunk.derive_key(master_key, path)
 
-    assert "DJggQkhQv1ucjiKiK6k3wEqYVRdi4h261t" == address
+    address = Dogecoin.address(key, :mainnet)
+
+    assert "DPiwFnkrUPGfQ2Uk9jsAVJMuN3RV9t8CMz" == address
   end
 end
