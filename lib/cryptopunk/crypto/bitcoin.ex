@@ -3,6 +3,7 @@ defmodule Cryptopunk.Crypto.Bitcoin do
   Bitcoin address generation logic
   """
 
+  alias Cryptopunk.Crypto.Bitcoin.Bech32Address
   alias Cryptopunk.Crypto.Bitcoin.LegacyAddress
   alias Cryptopunk.Crypto.Bitcoin.P2shP2wpkhAddress
   alias Cryptopunk.Key
@@ -17,21 +18,32 @@ defmodule Cryptopunk.Crypto.Bitcoin do
     address(private_or_public_key, net_or_version_byte, :p2sh_p2wpkh)
   end
 
-  defp address(%Key{type: :private} = private_key, net_or_version_byte, type) do
+  @spec bech32_address(Key.t(), atom() | String.t(), Keyword.t()) :: String.t()
+  def bech32_address(private_or_public_key, net_or_hrp, opts \\ []) do
+    address(private_or_public_key, net_or_hrp, :bech32, opts)
+  end
+
+  defp address(private_key, net_or_version_byte, type, opts \\ [])
+
+  defp address(%Key{type: :private} = private_key, net_or_version_byte, type, opts) do
     private_key
     |> Key.public_from_private()
-    |> generate_address(net_or_version_byte, type)
+    |> generate_address(net_or_version_byte, type, opts)
   end
 
-  defp address(%Key{type: :public} = public_key, net_or_version_byte, type) do
-    generate_address(public_key, net_or_version_byte, type)
+  defp address(%Key{type: :public} = public_key, net_or_version_byte, type, opts) do
+    generate_address(public_key, net_or_version_byte, type, opts)
   end
 
-  defp generate_address(public_key, net_or_version_byte, :legacy) do
+  defp generate_address(public_key, net_or_version_byte, :legacy, _opts) do
     LegacyAddress.address(public_key, net_or_version_byte)
   end
 
-  defp generate_address(public_key, net_or_version_byte, :p2sh_p2wpkh) do
+  defp generate_address(public_key, net_or_version_byte, :p2sh_p2wpkh, _opts) do
     P2shP2wpkhAddress.address(public_key, net_or_version_byte)
+  end
+
+  defp generate_address(public_key, net_or_hrp, :bech32, opts) do
+    Bech32Address.address(public_key, net_or_hrp, opts)
   end
 end

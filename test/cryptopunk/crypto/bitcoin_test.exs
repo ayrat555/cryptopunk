@@ -59,4 +59,45 @@ defmodule Cryptopunk.Crypto.BitcoinTest do
       assert "2MtEWsJk8NDJBUhgVJuufMwcdRbjdYEgBQ4" == Bitcoin.p2sh_p2wpkh_address(key, :testnet)
     end
   end
+
+  describe "bech32_address/3" do
+    setup do
+      mnemonic =
+        "royal blossom shell cram arrow skirt panda review multiply jungle elevator fly injury network fold"
+
+      master_key =
+        mnemonic
+        |> Cryptopunk.create_seed()
+        |> Cryptopunk.master_key_from_seed()
+
+      %{master_key: master_key}
+    end
+
+    test "generates bech32 mainnet address", %{master_key: master_key} do
+      {:ok, path} = Cryptopunk.parse_path("m/84'/0'/0'/0/0")
+
+      key = Cryptopunk.derive_key(master_key, path)
+
+      assert "bc1qnv5fzufzf3l4uj9ey95w6zw32nevwjxn9497vk" ==
+               Bitcoin.bech32_address(key, :mainnet)
+    end
+
+    test "generates bech32 testnet address", %{master_key: master_key} do
+      {:ok, path} = Cryptopunk.parse_path("m/84'/1'/0'/0/0")
+
+      key = Cryptopunk.derive_key(master_key, path)
+
+      assert "tb1qc89hn5kmwxl804yfqmd97st3trarqr24wvvjmy" ==
+               Bitcoin.bech32_address(key, :testnet)
+    end
+
+    test "generates bech32 regtest address", %{master_key: master_key} do
+      {:ok, path} = Cryptopunk.parse_path("m/84'/1'/0'/0/0")
+
+      key = Cryptopunk.derive_key(master_key, path)
+
+      assert "bcrt1qc89hn5kmwxl804yfqmd97st3trarqr24v94lvd" ==
+               Bitcoin.bech32_address(key, :regtest)
+    end
+  end
 end

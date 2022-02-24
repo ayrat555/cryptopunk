@@ -17,19 +17,18 @@ defmodule Cryptopunk.MixProject do
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
       extra_applications: [:logger, :crypto]
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       {:ex_keccak, "~> 0.3"},
       {:ex_pbkdf2, "~> 0.4"},
       {:ex_secp256k1, "~> 0.4"},
+      {:ex_bech32, "~> 0.1"},
       {:jason, "~> 1.3"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
