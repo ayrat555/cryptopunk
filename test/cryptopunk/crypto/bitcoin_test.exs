@@ -79,7 +79,25 @@ defmodule Cryptopunk.Crypto.BitcoinTest do
       key = Cryptopunk.derive_key(master_key, path)
 
       assert "bc1qnv5fzufzf3l4uj9ey95w6zw32nevwjxn9497vk" ==
-               Bitcoin.bech32_address(key, :mainnet, version: 1)
+               Bitcoin.bech32_address(key, :mainnet)
+    end
+
+    test "generates bech32 testnet address", %{master_key: master_key} do
+      {:ok, path} = Cryptopunk.parse_path("m/84'/1'/0'/0/0")
+
+      key = Cryptopunk.derive_key(master_key, path)
+
+      assert "tb1qc89hn5kmwxl804yfqmd97st3trarqr24wvvjmy" ==
+               Bitcoin.bech32_address(key, :testnet)
+    end
+
+    test "generates bech32 regtest address", %{master_key: master_key} do
+      {:ok, path} = Cryptopunk.parse_path("m/84'/1'/0'/0/0")
+
+      key = Cryptopunk.derive_key(master_key, path)
+
+      assert "bcrt1qc89hn5kmwxl804yfqmd97st3trarqr24v94lvd" ==
+               Bitcoin.bech32_address(key, :regtest)
     end
   end
 end

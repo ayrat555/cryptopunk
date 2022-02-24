@@ -4,14 +4,14 @@ defmodule Cryptopunk.Crypto.Bitcoin.Bech32Address do
   alias Cryptopunk.Key
   alias Cryptopunk.Utils
 
-  @default_version 1
+  @default_version 0
 
   @version_to_variant %{
     0 => :bech32,
     1 => :bech32m
   }
 
-  @hrp %{mainnet: "bc", testnet: "tb"}
+  @hrp %{mainnet: "bc", testnet: "tb", regtest: "bcrt"}
 
   @spec address(Key.t(), atom() | binary(), Keyword.t()) :: String.t()
   def address(public_key, net, opts) when is_atom(net) do
@@ -29,9 +29,7 @@ defmodule Cryptopunk.Crypto.Bitcoin.Bech32Address do
       |> Utils.compress_public_key()
       |> Utils.hash160()
 
-    key_hash_with_version = <<version>> <> key_hash
-
-    {:ok, address} = ExBech32.encode(hrp, key_hash_with_version, bech32_version)
+    {:ok, address} = ExBech32.encode_with_version(hrp, version, key_hash, bech32_version)
 
     address
   end
