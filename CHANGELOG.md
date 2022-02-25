@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1 (2022-02-25)
+
+- Update ex_keccak to 0.4.0 ([#6](https://github.com/ayrat555/cryptopunk/pull/6))
+
 ## 0.4.0 (2022-02-24)
 
 - Add P2WPKH-P2SH addresses ([#3](https://github.com/ayrat555/cryptopunk/pull/3))
