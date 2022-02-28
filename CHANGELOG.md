@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0 (2022-02-28)
+
+- Update nifs ([#7](https://github.com/ayrat555/cryptopunk/pull/7))
+
 ## 0.4.1 (2022-02-25)
 
 - Update ex_keccak to 0.4.0 ([#6](https://github.com/ayrat555/cryptopunk/pull/6))
