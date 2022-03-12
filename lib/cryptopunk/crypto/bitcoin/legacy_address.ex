@@ -6,8 +6,8 @@ defmodule Cryptopunk.Crypto.Bitcoin.LegacyAddress do
   alias Cryptopunk.Utils
 
   @legacy_version_bytes %{
-    mainnet: <<0x00>>,
-    testnet: <<0x6F>>
+    mainnet: 0,
+    testnet: 111
   }
 
   @spec address(Key.t(), atom() | binary()) :: String.t()
@@ -18,9 +18,12 @@ defmodule Cryptopunk.Crypto.Bitcoin.LegacyAddress do
   end
 
   def address(public_key, version_byte) do
-    public_key
-    |> Utils.compress_public_key()
-    |> Utils.hash160()
-    |> B58.encode58_check!(version_byte)
+    {:ok, address} =
+      public_key
+      |> Utils.compress_public_key()
+      |> Utils.hash160()
+      |> ExBase58.encode_check(version_byte)
+
+    address
   end
 end

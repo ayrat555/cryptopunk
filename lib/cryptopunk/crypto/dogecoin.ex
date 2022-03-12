@@ -7,8 +7,8 @@ defmodule Cryptopunk.Crypto.Dogecoin do
   alias Cryptopunk.Key
 
   @version_bytes %{
-    mainnet: <<0x1E>>,
-    testnet: <<0x71>>
+    mainnet: 30,
+    testnet: 113
   }
 
   @doc """
