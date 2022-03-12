@@ -1,7 +1,6 @@
 defmodule Cryptopunk.Crypto.Bitcoin.P2shP2wpkhAddress do
   @moduledoc false
 
-  alias Cryptopunk.B58
   alias Cryptopunk.Key
   alias Cryptopunk.Utils
 
@@ -29,7 +28,7 @@ defmodule Cryptopunk.Crypto.Bitcoin.P2shP2wpkhAddress do
     redeem_script = @redeem_script_prefix <> key_hash
     script_sig = Utils.hash160(redeem_script)
 
-    {:ok, address} = ExBase58.encode_check(script_sig, version_byte)
+    {:ok, address} = ExBase58.encode_check_version(script_sig, version_byte)
 
     address
   end

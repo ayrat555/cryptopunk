@@ -1,7 +1,6 @@
 defmodule Cryptopunk.Crypto.Bitcoin.LegacyAddress do
   @moduledoc false
 
-  alias Cryptopunk.B58
   alias Cryptopunk.Key
   alias Cryptopunk.Utils
 
@@ -22,7 +21,7 @@ defmodule Cryptopunk.Crypto.Bitcoin.LegacyAddress do
       public_key
       |> Utils.compress_public_key()
       |> Utils.hash160()
-      |> ExBase58.encode_check(version_byte)
+      |> ExBase58.encode_check_version(version_byte)
 
     address
   end
