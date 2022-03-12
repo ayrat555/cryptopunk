@@ -4,7 +4,6 @@ defmodule Cryptopunk.Key do
   """
   defstruct [:type, :key, :chain_code, :depth, :index, :parent_fingerprint]
 
-  alias Cryptopunk.B58
   alias Cryptopunk.Utils
 
   @type t :: %__MODULE__{}
@@ -108,10 +107,13 @@ defmodule Cryptopunk.Key do
 
   @spec serialize(t(), binary()) :: String.t()
   def serialize(%__MODULE__{} = key, version) do
-    key
-    |> serialize_key()
-    |> do_serialize(key, version)
-    |> B58.version_encode58_check!()
+    {:ok, encoded} =
+      key
+      |> serialize_key()
+      |> do_serialize(key, version)
+      |> ExBase58.encode_check()
+
+    encoded
   end
 
   @spec deserialize(binary()) :: t()
@@ -124,14 +126,15 @@ defmodule Cryptopunk.Key do
   end
 
   defp do_deserialize(encoded_key, type) do
-    <<
-      _version_number::binary-4,
-      depth::8,
-      fingerprint::binary-4,
-      index::32,
-      chain_code::binary-32,
-      key::binary-33
-    >> = B58.version_decode58_check!(encoded_key)
+    {:ok,
+     <<
+       _version_number::binary-4,
+       depth::8,
+       fingerprint::binary-4,
+       index::32,
+       chain_code::binary-32,
+       key::binary-33
+     >>} = ExBase58.decode_check(encoded_key)
 
     %__MODULE__{
       type: type,
