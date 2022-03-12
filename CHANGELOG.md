@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.1 (2022-03-12)
+
+- Use ex_base58 NIF ([#11](https://github.com/ayrat555/cryptopunk/pull/11))
+
 ## 0.5.0 (2022-02-28)
 
 - Update nifs ([#7](https://github.com/ayrat555/cryptopunk/pull/7))
