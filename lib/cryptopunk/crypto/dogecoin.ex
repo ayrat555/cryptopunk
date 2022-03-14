@@ -29,10 +29,10 @@ defmodule Cryptopunk.Crypto.Dogecoin do
       iex> Cryptopunk.Crypto.Dogecoin.address(public_key, :testnet)
       "nYxUariD3FNhvYrgVHGQk6y68aBtLHP87b"
   """
-  @spec address(Key.t(), atom()) :: String.t()
-  def address(private_or_public_key, net) do
+  @spec address(Key.t(), atom(), Keyword.t()) :: String.t()
+  def address(private_or_public_key, net, opts \\ []) do
     version_byte = Map.fetch!(@version_bytes, net)
 
-    Bitcoin.legacy_address(private_or_public_key, version_byte)
+    Bitcoin.legacy_address(private_or_public_key, version_byte, opts)
   end
 end

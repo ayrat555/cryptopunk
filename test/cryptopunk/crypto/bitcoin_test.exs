@@ -30,6 +30,29 @@ defmodule Cryptopunk.Crypto.BitcoinTest do
       assert "15HJfZhj5V9qQeyvFxPxMWNzRbcZpFUAaA" ==
                Bitcoin.legacy_address(derived_public_key, :mainnet)
     end
+
+    test "generates address from uncompressed public key" do
+      public_key = %Cryptopunk.Key{
+        chain_code:
+          <<184, 11, 206, 224, 102, 96, 47, 80, 46, 138, 85, 56, 176, 38, 61, 128, 29, 175, 239,
+            140, 82, 86, 80, 48, 90, 182, 192, 180, 100, 69, 49, 128>>,
+        depth: 5,
+        index: 0,
+        key:
+          <<4, 24, 46, 89, 53, 195, 145, 241, 19, 7, 237, 101, 67, 103, 24, 237, 71, 59, 96, 213,
+            38, 203, 90, 197, 19, 54, 100, 111, 138, 147, 230, 116, 172, 115, 191, 63, 16, 149,
+            104, 132, 201, 171, 19, 104, 7, 197, 136, 141, 243, 217, 190, 97, 123, 94, 5, 135, 82,
+            10, 195, 207, 205, 156, 48, 246, 39>>,
+        parent_fingerprint: <<115, 62, 87, 238>>,
+        type: :public
+      }
+
+      assert "18ejJd8nqhYbtY4Z6arYL21LetCS6fwbpM" ==
+               Bitcoin.legacy_address(public_key, :mainnet, uncompressed: true)
+
+      assert "moAgbgDmeiyrfeYAp9pv9wDfWso8yVYSjP" ==
+               Bitcoin.legacy_address(public_key, :testnet, uncompressed: true)
+    end
   end
 
   describe "p2sh_p2wpkh_address/2" do
