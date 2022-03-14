@@ -28,9 +28,9 @@ defmodule Cryptopunk.Crypto.Bitcoin do
       iex> Cryptopunk.Crypto.Bitcoin.legacy_address(public_key, :testnet)
       "mkHGce7dctSxHgaWSSbmmrRWsZfzz7MxMk"
   """
-  @spec legacy_address(Key.t(), atom() | binary()) :: String.t()
-  def legacy_address(private_or_public_key, net_or_version_byte) do
-    address(private_or_public_key, net_or_version_byte, :legacy)
+  @spec legacy_address(Key.t(), atom() | binary(), Keyword.t()) :: String.t()
+  def legacy_address(private_or_public_key, net_or_version_byte, opts) do
+    address(private_or_public_key, net_or_version_byte, :legacy, opts)
   end
 
   @doc """
@@ -96,7 +96,7 @@ defmodule Cryptopunk.Crypto.Bitcoin do
     generate_address(public_key, net_or_version_byte, type, opts)
   end
 
-  defp generate_address(public_key, net_or_version_byte, :legacy, _opts) do
+  defp generate_address(public_key, net_or_version_byte, :legacy, opts) do
     LegacyAddress.address(public_key, net_or_version_byte)
   end
 
