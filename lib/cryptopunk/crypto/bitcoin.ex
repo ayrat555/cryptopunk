@@ -13,10 +13,11 @@ defmodule Cryptopunk.Crypto.Bitcoin do
   @doc """
   Generate a legacy (P2PKH) address.
 
-  It accepts two parameters:
+  It accepts three parameters:
 
   - public or private key. if a private key is provided, it will be converted to public key.
   - network (`:mainnet` or `:testnet`)
+  - optional keyword params. Currently, the only allowed parameter is `:uncompressed` key. Passing `[uncompressed: true]` will generate the address from the uncompressed public key which is not advised. but it may be required for compatibility reasons
 
   Examples:
 
@@ -27,10 +28,14 @@ defmodule Cryptopunk.Crypto.Bitcoin do
       iex> public_key = %Cryptopunk.Key{key: <<4, 57, 163, 96, 19, 48, 21, 151, 218, 239, 65, 251, 229, 147, 160, 44, 197, 19, 208, 181, 85, 39, 236, 45, 241, 5, 14, 46, 143, 244, 156, 133, 194, 60, 190, 125, 237, 14, 124, 230, 165, 148, 137, 107, 143, 98, 136, 143, 219, 197, 200, 130, 19, 5, 226, 234, 66, 191, 1, 227, 115, 0, 17, 98, 129>>, type: :public}
       iex> Cryptopunk.Crypto.Bitcoin.legacy_address(public_key, :testnet)
       "mkHGce7dctSxHgaWSSbmmrRWsZfzz7MxMk"
+
+      iex> private_key = %Cryptopunk.Key{key: <<16, 42, 130, 92, 247, 244, 62, 96, 24, 129, 187, 141, 124, 42, 176, 116, 234, 171, 184, 107, 3, 229, 255, 72, 30, 116, 79, 243, 36, 142, 184, 24>>, type: :private}
+      iex> Cryptopunk.Crypto.Bitcoin.legacy_address(private_key, :mainnet, uncompressed: true)
+      "1AqWUNX6mdaiPay55BqZcAMqNSEJgcgj1D"
   """
-  @spec legacy_address(Key.t(), atom() | binary()) :: String.t()
-  def legacy_address(private_or_public_key, net_or_version_byte) do
-    address(private_or_public_key, net_or_version_byte, :legacy)
+  @spec legacy_address(Key.t(), atom() | binary(), Keyword.t()) :: String.t()
+  def legacy_address(private_or_public_key, net_or_version_byte, opts \\ []) do
+    address(private_or_public_key, net_or_version_byte, :legacy, opts)
   end
 
   @doc """
@@ -96,8 +101,8 @@ defmodule Cryptopunk.Crypto.Bitcoin do
     generate_address(public_key, net_or_version_byte, type, opts)
   end
 
-  defp generate_address(public_key, net_or_version_byte, :legacy, _opts) do
-    LegacyAddress.address(public_key, net_or_version_byte)
+  defp generate_address(public_key, net_or_version_byte, :legacy, opts) do
+    LegacyAddress.address(public_key, net_or_version_byte, opts)
   end
 
   defp generate_address(public_key, net_or_version_byte, :p2sh_p2wpkh, _opts) do

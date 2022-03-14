@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.2 (2022-03-14)
+
+- Support uncompressed public keys for legacy addresses ([#12](https://github.com/ayrat555/cryptopunk/pull/12))
+
 ## 0.5.1 (2022-03-12)
 
 - Use ex_base58 NIF ([#11](https://github.com/ayrat555/cryptopunk/pull/11))
