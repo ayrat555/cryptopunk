@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.3 (2022-04-03)
+
+- Support tron addresses ([#14](https://github.com/ayrat555/cryptopunk/pull/14))
+
 ## 0.5.2 (2022-03-14)
 
 - Support uncompressed public keys for legacy addresses ([#12](https://github.com/ayrat555/cryptopunk/pull/12))
