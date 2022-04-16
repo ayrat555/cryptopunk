@@ -107,13 +107,10 @@ defmodule Cryptopunk.Key do
 
   @spec serialize(t(), binary()) :: String.t()
   def serialize(%__MODULE__{} = key, version) do
-    {:ok, encoded} =
-      key
-      |> serialize_key()
-      |> do_serialize(key, version)
-      |> ExBase58.encode_check()
-
-    encoded
+    key
+    |> serialize_key()
+    |> do_serialize(key, version)
+    |> ExBase58.encode_check!()
   end
 
   @spec deserialize(binary()) :: t()
@@ -126,15 +123,14 @@ defmodule Cryptopunk.Key do
   end
 
   defp do_deserialize(encoded_key, type) do
-    {:ok,
-     <<
-       _version_number::binary-4,
-       depth::8,
-       fingerprint::binary-4,
-       index::32,
-       chain_code::binary-32,
-       key::binary-33
-     >>} = ExBase58.decode_check(encoded_key)
+    <<
+      _version_number::binary-4,
+      depth::8,
+      fingerprint::binary-4,
+      index::32,
+      chain_code::binary-32,
+      key::binary-33
+    >> = ExBase58.decode_check!(encoded_key)
 
     %__MODULE__{
       type: type,

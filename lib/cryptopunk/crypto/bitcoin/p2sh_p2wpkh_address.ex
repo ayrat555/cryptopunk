@@ -26,10 +26,9 @@ defmodule Cryptopunk.Crypto.Bitcoin.P2shP2wpkhAddress do
       |> Utils.hash160()
 
     redeem_script = @redeem_script_prefix <> key_hash
-    script_sig = Utils.hash160(redeem_script)
 
-    {:ok, address} = ExBase58.encode_check_version(script_sig, version_byte)
-
-    address
+    redeem_script
+    |> Utils.hash160()
+    |> ExBase58.encode_check_version!(version_byte)
   end
 end

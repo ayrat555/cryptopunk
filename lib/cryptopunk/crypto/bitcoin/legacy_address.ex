@@ -19,13 +19,10 @@ defmodule Cryptopunk.Crypto.Bitcoin.LegacyAddress do
   end
 
   def address(public_key, version_byte, opts) do
-    {:ok, address} =
-      public_key
-      |> maybe_use_uncompressed_key(opts)
-      |> Utils.hash160()
-      |> ExBase58.encode_check_version(version_byte)
-
-    address
+    public_key
+    |> maybe_use_uncompressed_key(opts)
+    |> Utils.hash160()
+    |> ExBase58.encode_check_version!(version_byte)
   end
 
   def maybe_use_uncompressed_key(%Key{key: key, type: :public}, uncompressed: true), do: key

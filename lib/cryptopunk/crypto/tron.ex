@@ -46,13 +46,10 @@ defmodule Cryptopunk.Crypto.Tron do
   end
 
   defp to_address(hash, network) do
-    {:ok, encoded} =
-      @version_bytes
-      |> Map.fetch!(network)
-      |> Kernel.<>(hash)
-      |> ExBase58.encode_check()
-
-    encoded
+    @version_bytes
+    |> Map.fetch!(network)
+    |> Kernel.<>(hash)
+    |> ExBase58.encode_check!()
   end
 
   defp hash_256(data) do
