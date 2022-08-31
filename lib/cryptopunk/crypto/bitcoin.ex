@@ -33,7 +33,7 @@ defmodule Cryptopunk.Crypto.Bitcoin do
       iex> Cryptopunk.Crypto.Bitcoin.legacy_address(private_key, :mainnet, uncompressed: true)
       "1AqWUNX6mdaiPay55BqZcAMqNSEJgcgj1D"
   """
-  @spec legacy_address(Key.t(), atom() | binary(), Keyword.t()) :: String.t()
+  @spec legacy_address(Key.t(), atom() | non_neg_integer(), Keyword.t()) :: String.t()
   def legacy_address(private_or_public_key, net_or_version_byte, opts \\ []) do
     address(private_or_public_key, net_or_version_byte, :legacy, opts)
   end
@@ -56,7 +56,7 @@ defmodule Cryptopunk.Crypto.Bitcoin do
       iex> Cryptopunk.Crypto.Bitcoin.p2sh_p2wpkh_address(public_key, :testnet)
       "2NFNttcoWjE7WUcByBqpPKkcjg8wzgnU5HE"
   """
-  @spec p2sh_p2wpkh_address(Key.t(), atom() | binary()) :: String.t()
+  @spec p2sh_p2wpkh_address(Key.t(), atom() | non_neg_integer()) :: String.t()
   def p2sh_p2wpkh_address(private_or_public_key, net_or_version_byte) do
     address(private_or_public_key, net_or_version_byte, :p2sh_p2wpkh)
   end

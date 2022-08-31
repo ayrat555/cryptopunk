@@ -12,7 +12,7 @@ defmodule Cryptopunk.Crypto.Bitcoin.P2shP2wpkhAddress do
     testnet: 196
   }
 
-  @spec address(Key.t(), atom() | binary()) :: String.t()
+  @spec address(Key.t(), atom() | non_neg_integer()) :: String.t()
   def address(public_key, net) when is_atom(net) do
     version_byte = Map.fetch!(@version_bytes, net)
 

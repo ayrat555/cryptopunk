@@ -7,7 +7,7 @@ defmodule Cryptopunk.Key do
   alias Cryptopunk.Utils
 
   @type t :: %__MODULE__{
-          type: atom(),
+          type: :private | :public,
           key: binary(),
           chain_code: binary(),
           depth: non_neg_integer(),

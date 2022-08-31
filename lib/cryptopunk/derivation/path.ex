@@ -6,7 +6,15 @@ defmodule Cryptopunk.Derivation.Path do
   """
   defstruct [:type, :purpose, :coin_type, :account, :change, :address_index]
 
-  @type t :: %__MODULE__{}
+  @type t :: %__MODULE__{
+          type: :private | :public,
+          purpose: non_neg_integer(),
+          change: non_neg_integer(),
+          coin_type: non_neg_integer(),
+          account: non_neg_integer(),
+          address_index: non_neg_integer()
+        }
+
   @type raw_path :: {atom(), [non_neg_integer]}
 
   @two_power_31 2_147_483_648
