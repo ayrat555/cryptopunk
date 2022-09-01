@@ -17,11 +17,6 @@ jobs:
           - pair:
               elixir: '1.13'
               otp: '24.3'
-            exclude_tags: 'reindex'
-          - pair:
-              elixir: '1.13'
-              otp: '25.0'
-            exclude_tags: 'nothing'
             lint: lint
 
     runs-on: ubuntu-latest
