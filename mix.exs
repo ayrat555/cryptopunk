@@ -32,7 +32,7 @@ defmodule Cryptopunk.MixProject do
       {:ex_base58, "~> 0.3"},
       {:jason, "~> 1.3"},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end
