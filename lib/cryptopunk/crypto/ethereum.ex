@@ -33,6 +33,17 @@ defmodule Cryptopunk.Crypto.Ethereum do
     |> to_address()
   end
 
+  @doc """
+  Validate an ethereum address
+
+  Examples:
+
+      iex> Cryptopunk.Crypto.Ethereum.valid?("0xea0a6e3c511bbd10f4519ece37dc24887e11b55d")
+      true
+
+      iex> Cryptopunk.Crypto.Ethereum.valid?("0xea0a6e3c511bbd10f4519ece37dc24887e11b55D")
+      false
+  """
   @spec valid?(binary()) :: boolean()
   def valid?(address) do
     Validation.valid?(address)
