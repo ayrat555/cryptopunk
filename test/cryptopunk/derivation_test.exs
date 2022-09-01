@@ -1,9 +1,9 @@
 defmodule Cryptopunk.DerivationTest do
   use ExUnit.Case
 
-  alias Cryptopunk.Key
   alias Cryptopunk.Derivation
   alias Cryptopunk.Derivation.Path
+  alias Cryptopunk.Key
 
   @private_key %Cryptopunk.Key{
     chain_code:

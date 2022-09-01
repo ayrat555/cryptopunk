@@ -1,8 +1,8 @@
 defmodule Cryptopunk.SeedTest do
   use ExUnit.Case
 
-  alias Cryptopunk.Seed
   alias Cryptopunk.Mnemonic
+  alias Cryptopunk.Seed
 
   describe "create/1" do
     test "creates seed from string" do
