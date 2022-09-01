@@ -9,7 +9,7 @@ defmodule Cryptopunk.Crypto.Bitcoin.LegacyAddress do
     testnet: 111
   }
 
-  @spec address(Key.t(), atom() | binary(), Keyword.t()) :: String.t()
+  @spec address(Key.t(), atom() | non_neg_integer(), Keyword.t()) :: String.t()
   def address(public_key, net, opts \\ [])
 
   def address(public_key, net, opts) when is_atom(net) do

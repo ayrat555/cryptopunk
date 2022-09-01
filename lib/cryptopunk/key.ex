@@ -6,7 +6,14 @@ defmodule Cryptopunk.Key do
 
   alias Cryptopunk.Utils
 
-  @type t :: %__MODULE__{}
+  @type t :: %__MODULE__{
+          type: :private | :public,
+          key: binary(),
+          chain_code: binary(),
+          depth: non_neg_integer(),
+          index: non_neg_integer(),
+          parent_fingerprint: binary()
+        }
 
   @master_hmac_key "Bitcoin seed"
 
