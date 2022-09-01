@@ -21,7 +21,6 @@ jobs:
           - pair:
               elixir: '1.13'
               otp: '25.0'
-              postgres: '14.1-alpine'
             exclude_tags: 'nothing'
             lint: lint
 
