@@ -4,6 +4,7 @@ defmodule Cryptopunk.Key do
   """
   defstruct [:type, :key, :chain_code, :depth, :index, :parent_fingerprint]
 
+  alias Cryptopunk.Key.Serialization
   alias Cryptopunk.Utils
 
   @type t :: %__MODULE__{
@@ -113,74 +114,13 @@ defmodule Cryptopunk.Key do
   end
 
   @spec serialize(t(), binary()) :: String.t()
-  def serialize(%__MODULE__{} = key, version) do
-    key
-    |> serialize_key()
-    |> do_serialize(key, version)
-    |> ExBase58.encode_check!()
+  def serialize(key, version) do
+    Serialization.encode(key, version)
   end
 
   @spec deserialize(binary()) :: t()
-  def deserialize(<<"xpub", _rest::binary>> = encoded_key) do
-    do_deserialize(encoded_key, :public)
-  end
-
-  def deserialize(<<"xprv", _rest::binary>> = encoded_key) do
-    do_deserialize(encoded_key, :private)
-  end
-
-  defp do_deserialize(encoded_key, type) do
-    <<
-      _version_number::binary-4,
-      depth::8,
-      fingerprint::binary-4,
-      index::32,
-      chain_code::binary-32,
-      key::binary-33
-    >> = ExBase58.decode_check!(encoded_key)
-
-    %__MODULE__{
-      type: type,
-      key: deserialize_key(key, type),
-      chain_code: chain_code,
-      depth: depth,
-      index: index,
-      parent_fingerprint: fingerprint
-    }
-  end
-
-  defp deserialize_key(<<0::8, key::binary>>, :private), do: key
-
-  defp deserialize_key(key, :public) do
-    Utils.decompress_public_key(key)
-  end
-
-  defp serialize_key(%__MODULE__{type: :private, key: key}) do
-    <<0::8, key::binary>>
-  end
-
-  defp serialize_key(%__MODULE__{type: :public} = public_key) do
-    Utils.compress_public_key(public_key)
-  end
-
-  defp do_serialize(
-         raw_key,
-         %__MODULE__{
-           chain_code: chain_code,
-           depth: depth,
-           index: index,
-           parent_fingerprint: fingerprint
-         },
-         version
-       ) do
-    <<
-      version::binary,
-      depth::8,
-      fingerprint::binary,
-      index::32,
-      chain_code::binary,
-      raw_key::binary
-    >>
+  def deserialize(encoded_key) do
+    Serialization.decode(encoded_key)
   end
 
   defp fingerprint(%__MODULE__{type: :public} = key) do
