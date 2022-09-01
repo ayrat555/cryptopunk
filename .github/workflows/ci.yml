@@ -18,6 +18,10 @@ jobs:
               elixir: '1.13'
               otp: '24.3'
             lint: lint
+          - pair:
+              elixir: '1.13'
+              otp: '25.0'
+            lint: lint
 
     runs-on: ubuntu-latest
 
@@ -43,10 +47,6 @@ jobs:
 
       - name: Run mix format
         run: mix format --check-formatted
-        if: ${{ matrix.lint }}
-
-      - name: Run mix deps.unlock
-        run: mix deps.unlock --check-unused
         if: ${{ matrix.lint }}
 
       - name: Run mix deps.compile
