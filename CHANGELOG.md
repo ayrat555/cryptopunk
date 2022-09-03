@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.0 (2022-09-03)
+
+- Update NIF deps
+
 ## 0.5.4 (2022-09-01)
 
 - Add WIF encoding ([#25](https://github.com/ayrat555/cryptopunk/pull/25))
