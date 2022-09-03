@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.4 (2022-09-01)
+
+- Add WIF encoding ([#25](https://github.com/ayrat555/cryptopunk/pull/25))
+- Add Ethereum address validation ([#26](https://github.com/ayrat555/cryptopunk/pull/26))
+
 ## 0.5.3 (2022-04-03)
 
 - Support tron addresses ([#14](https://github.com/ayrat555/cryptopunk/pull/14))

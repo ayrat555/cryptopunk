@@ -2,6 +2,7 @@ defmodule Cryptopunk.Crypto.Ethereum do
   @moduledoc """
   Ethereum address generation logic
   """
+  alias Cryptopunk.Crypto.Ethereum.Validation
   alias Cryptopunk.Key
 
   @doc """
@@ -30,6 +31,22 @@ defmodule Cryptopunk.Crypto.Ethereum do
     |> hash_256()
     |> get_last_20_bytes()
     |> to_address()
+  end
+
+  @doc """
+  Validate an ethereum address
+
+  Examples:
+
+      iex> Cryptopunk.Crypto.Ethereum.valid?("0xea0a6e3c511bbd10f4519ece37dc24887e11b55d")
+      true
+
+      iex> Cryptopunk.Crypto.Ethereum.valid?("0xea0a6e3c511bbd10f4519ece37dc24887e11b55D")
+      false
+  """
+  @spec valid?(binary()) :: boolean()
+  def valid?(address) do
+    Validation.valid?(address)
   end
 
   defp to_address(public_hash) do
