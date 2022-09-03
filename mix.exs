@@ -27,7 +27,7 @@ defmodule Cryptopunk.MixProject do
     [
       {:ex_keccak, "~> 0.5"},
       {:ex_pbkdf2, "~> 0.7"},
-      {:ex_secp256k1, "~> 0.5"},
+      {:ex_secp256k1, "~> 0.6"},
       {:ex_bech32, "~> 0.4"},
       {:ex_base58, "~> 0.5"},
       {:jason, "~> 1.3"},
