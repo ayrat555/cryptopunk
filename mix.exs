@@ -4,7 +4,7 @@ defmodule Cryptopunk.MixProject do
   def project do
     [
       app: :cryptopunk,
-      version: "0.6.0",
+      version: "0.6.1",
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -25,7 +25,7 @@ defmodule Cryptopunk.MixProject do
 
   defp deps do
     [
-      {:ex_keccak, "~> 0.5"},
+      {:ex_keccak, "~> 0.6"},
       {:ex_pbkdf2, "~> 0.7"},
       {:ex_secp256k1, "~> 0.6"},
       {:ex_bech32, "~> 0.4"},

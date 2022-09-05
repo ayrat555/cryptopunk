@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.1 (2022-09-05)
+
+- Update ex_keccak to 0.6.0
+
 ## 0.6.0 (2022-09-03)
 
 - Update NIF deps
