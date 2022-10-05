@@ -33,4 +33,42 @@ defmodule Cryptopunk.Crypto.Bitcoin.Bech32Address do
 
     address
   end
+
+  @spec validate(binary()) :: {:ok, map()} | {:error, atom()}
+  def validate(address) do
+    case ExBech32.decode_with_version(address) do
+      {:ok, {hrp, version, key_hash, _alg}} -> do_validate(hrp, version, key_hash)
+      _error -> {:error, :invalid_address}
+    end
+  end
+
+  def do_validate(hrp, version, key_hash) do
+    with {:ok, network} <- find_network(hrp),
+         {:ok, type} <- find_type(version, key_hash) do
+      {:ok, %{network: network, type: type}}
+    end
+  end
+
+  defp find_network(hrp) do
+    found_network =
+      Enum.find(@hrp, fn {_key, value} ->
+        value == hrp
+      end)
+
+    case found_network do
+      nil -> {:error, :invalid_network}
+      {network, _hrp} -> {:ok, network}
+    end
+  end
+
+  defp find_type(version, key_hash) do
+    version =
+      cond do
+        byte_size(key_hash) == 20 -> :p2wpkh
+        version == 1 -> :p2tr
+        true -> :p2wsh
+      end
+
+    {:ok, version}
+  end
 end
