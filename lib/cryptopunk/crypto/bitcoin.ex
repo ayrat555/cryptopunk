@@ -89,6 +89,55 @@ defmodule Cryptopunk.Crypto.Bitcoin do
     address(private_or_public_key, net_or_hrp, :bech32, opts)
   end
 
+  @doc """
+  Validate a bitcoin address
+
+  Examples
+
+      iex> Bitcoin.validate("bc1qc89hn5kmwxl804yfqmd97st3trarqr24y2hpqh")
+      {:ok, %{network: :mainnet, type: :p2wpkh}}
+
+      iex> Bitcoin.validate("1AqWUNX6mdaiPay55BqZcAMqNSEJgcgj1D")
+      {:ok, %{network: :mainnet, type: :p2pkh}}
+
+      iex> Bitcoin.validate("0AqWUNX6mdaiPay55BqZcAMqNSEJgcgj1D")
+      {:error, :invalid_address}
+  """
+  @spec validate(binary()) :: {:ok, map()} | {:error, atom()}
+  def validate(address) do
+    maybe_bech32? =
+      Enum.any?(Bech32Address.prefixes(), fn prefix ->
+        String.starts_with?(address, prefix)
+      end)
+
+    if maybe_bech32? do
+      Bech32Address.validate(address)
+    else
+      with {:ok, <<version::8, _data::binary-20>>} <-
+             ExBase58.decode_check(address, :bitcoin),
+           {:ok, _} <- ExBase58.decode_check_version(address, version, :bitcoin),
+           {network, type} <- Map.get(network_versions(), version) do
+        {:ok, %{network: network, type: type}}
+      else
+        _error -> {:error, :invalid_address}
+      end
+    end
+  end
+
+  defp network_versions do
+    legacy_versions =
+      Map.new(LegacyAddress.version_bytes(), fn {network, version} ->
+        {version, {network, :p2pkh}}
+      end)
+
+    p2sh_versions =
+      Map.new(P2shP2wpkhAddress.version_bytes(), fn {network, version} ->
+        {version, {network, :p2sh}}
+      end)
+
+    Map.merge(legacy_versions, p2sh_versions)
+  end
+
   defp address(private_key, net_or_version_byte, type, opts \\ [])
 
   defp address(%Key{type: :private} = private_key, net_or_version_byte, type, opts) do

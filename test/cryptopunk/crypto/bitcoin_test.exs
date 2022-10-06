@@ -125,4 +125,31 @@ defmodule Cryptopunk.Crypto.BitcoinTest do
                Bitcoin.bech32_address(key, :regtest)
     end
   end
+
+  describe "validate/1" do
+    test "validates a legacy address (testnet)" do
+      assert {:ok, %{network: :testnet, type: :p2pkh}} =
+               Bitcoin.validate("moAgbgDmeiyrfeYAp9pv9wDfWso8yVYSjP")
+    end
+
+    test "validates a legacy address (mainnet)" do
+      assert {:ok, %{network: :mainnet, type: :p2pkh}} =
+               Bitcoin.validate("12G4VanRFvwdtw2mQGXsbYvjDvUERuifmM")
+    end
+
+    test "validates a p2sh (testnet)" do
+      assert {:ok, %{network: :testnet, type: :p2sh}} =
+               Bitcoin.validate("2MxE9cWrNMwBUB4LMWkXHfNaJETaKP4Z8re")
+    end
+
+    test "validates a p2sh (mainnet)" do
+      assert {:ok, %{network: :mainnet, type: :p2sh}} =
+               Bitcoin.validate("3KRGxQ5Y3ge67HhGz56HkMhRQUtK4Bh1dq")
+    end
+
+    test "validates a segwit address (regtest)" do
+      assert {:ok, %{network: :regtest, type: :p2wpkh}} =
+               Bitcoin.validate("bcrt1qlwyzpu67l7s9gwv4gzuv4psypkxa4fx4ggs05g")
+    end
+  end
 end

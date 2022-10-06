@@ -4,7 +4,7 @@ defmodule Cryptopunk.Crypto.Bitcoin.LegacyAddress do
   alias Cryptopunk.Key
   alias Cryptopunk.Utils
 
-  @legacy_version_bytes %{
+  @version_bytes %{
     mainnet: 0,
     testnet: 111
   }
@@ -13,7 +13,7 @@ defmodule Cryptopunk.Crypto.Bitcoin.LegacyAddress do
   def address(public_key, net, opts \\ [])
 
   def address(public_key, net, opts) when is_atom(net) do
-    version_byte = Map.fetch!(@legacy_version_bytes, net)
+    version_byte = Map.fetch!(@version_bytes, net)
 
     address(public_key, version_byte, opts)
   end
@@ -25,9 +25,12 @@ defmodule Cryptopunk.Crypto.Bitcoin.LegacyAddress do
     |> ExBase58.encode_check_version!(version_byte)
   end
 
-  def maybe_use_uncompressed_key(%Key{key: key, type: :public}, uncompressed: true), do: key
+  @spec version_bytes() :: map()
+  def version_bytes, do: @version_bytes
 
-  def maybe_use_uncompressed_key(key, _opts) do
+  defp maybe_use_uncompressed_key(%Key{key: key, type: :public}, uncompressed: true), do: key
+
+  defp maybe_use_uncompressed_key(key, _opts) do
     Utils.compress_public_key(key)
   end
 end
