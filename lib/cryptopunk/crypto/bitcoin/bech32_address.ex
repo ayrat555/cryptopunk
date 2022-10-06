@@ -42,6 +42,9 @@ defmodule Cryptopunk.Crypto.Bitcoin.Bech32Address do
     end
   end
 
+  @spec prefixes() :: [binary()]
+  def prefixes, do: Map.values(@hrp)
+
   def do_validate(hrp, version, key_hash) do
     with {:ok, network} <- find_network(hrp),
          {:ok, type} <- find_type(version, key_hash) do

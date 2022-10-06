@@ -125,4 +125,11 @@ defmodule Cryptopunk.Crypto.BitcoinTest do
                Bitcoin.bech32_address(key, :regtest)
     end
   end
+
+  describe "validate/1" do
+    test "validates a legacy address (testnet)" do
+      assert {:ok, %{network: :testnet, type: :p2pkh}} =
+               Bitcoin.validate("moAgbgDmeiyrfeYAp9pv9wDfWso8yVYSjP")
+    end
+  end
 end

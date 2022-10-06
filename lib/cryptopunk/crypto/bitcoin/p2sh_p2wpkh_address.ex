@@ -31,4 +31,7 @@ defmodule Cryptopunk.Crypto.Bitcoin.P2shP2wpkhAddress do
     |> Utils.hash160()
     |> ExBase58.encode_check_version!(version_byte)
   end
+
+  @spec version_bytes() :: map()
+  def version_bytes, do: @version_bytes
 end
