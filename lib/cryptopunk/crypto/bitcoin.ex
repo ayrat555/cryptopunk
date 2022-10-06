@@ -89,6 +89,20 @@ defmodule Cryptopunk.Crypto.Bitcoin do
     address(private_or_public_key, net_or_hrp, :bech32, opts)
   end
 
+  @doc """
+  Validate a bitcoin address
+
+  Examples
+
+      iex> Bitcoin.validate("bc1qc89hn5kmwxl804yfqmd97st3trarqr24y2hpqh")
+      {:ok, %{network: :mainnet, type: :p2wpkh}}
+
+      iex> Bitcoin.validate("1AqWUNX6mdaiPay55BqZcAMqNSEJgcgj1D")
+      {:ok, %{network: :mainnet, type: :p2pkh}}
+
+      iex> Bitcoin.validate("0AqWUNX6mdaiPay55BqZcAMqNSEJgcgj1D")
+      {:error, :invalid_address}
+  """
   @spec validate(binary()) :: {:ok, map()} | {:error, atom()}
   def validate(address) do
     maybe_bech32? =
