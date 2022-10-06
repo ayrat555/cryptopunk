@@ -1,12 +1,16 @@
 # Changelog
 
+## 0.6.2 (2022-10-06)
+
+- Add validation function for bitcoin addresses ([#32](https://github.com/ayrat555/cryptopunk/pull/32))
+
 ## 0.6.1 (2022-09-05)
 
 - Update ex_keccak to 0.6.0
 
 ## 0.6.0 (2022-09-03)
 
-- Update NIF deps
+- Update NIF deps ([#23](https://github.com/ayrat555/cryptopunk/pull/23))
 
 ## 0.5.4 (2022-09-01)
 
