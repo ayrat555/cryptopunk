@@ -58,6 +58,7 @@ defmodule Cryptopunk.Crypto.EthereumTest do
     test "invalidates addresss" do
       refute Ethereum.valid?("0x5AAEB6053f3e94c9b9a09f33669435e7ef1beaed")
       refute Ethereum.valid?("0xE247a45c287191d435A8a5D72A7C8dc030451E9F")
+      refute Ethereum.valid?("myaddress")
     end
   end
 end
