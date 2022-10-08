@@ -4,6 +4,7 @@ defmodule Cryptopunk.Crypto.Ethereum.Validation do
   @mixed_case_regexp ~r/^(0x)?[0-9a-f]{40}$/i
   @upcase_regexp ~r/^(0x|0X)?[0-9A-F]{40}$/
   @downcase_regexp ~r/^(0x|0X)?[0-9a-f]{40}$/
+  @address_length 40
 
   @spec valid?(binary()) :: boolean()
   def valid?(address) do
@@ -30,6 +31,10 @@ defmodule Cryptopunk.Crypto.Ethereum.Validation do
   end
 
   defp check_address_checksum(address) do
+    String.length(address) == @address_length && do_check_address_checksum(address)
+  end
+
+  defp do_check_address_checksum(address) do
     address_hash =
       address
       |> String.downcase()
