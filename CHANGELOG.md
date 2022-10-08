@@ -1,12 +1,16 @@
 # Changelog
 
+## 0.6.3 (2022-10-08)
+
+- Fix ethereum address checksum validation ([#33](https://github.com/ayrat555/cryptopunk/pull/33))
+
 ## 0.6.2 (2022-10-06)
 
 - Add validation function for bitcoin addresses ([#32](https://github.com/ayrat555/cryptopunk/pull/32))
 
 ## 0.6.1 (2022-09-05)
 
-- Update ex_keccak to 0.6.0
+- Update ex_keccak to 0.6.0 ([#488da0a737](https://github.com/ayrat555/cryptopunk/commit/488da0a73758fb9ed5f4412716c96ddad93c3c9a))
 
 ## 0.6.0 (2022-09-03)
 
