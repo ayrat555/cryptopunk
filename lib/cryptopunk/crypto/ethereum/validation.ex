@@ -7,7 +7,7 @@ defmodule Cryptopunk.Crypto.Ethereum.Validation do
   @upcase_regexp ~r/^(0x|0X)?[0-9A-F]{40}$/
   @downcase_regexp ~r/^(0x|0X)?[0-9a-f]{40}$/
 
-  @spec valid?(Stirng.t()) :: boolean()
+  @spec valid?(String.t()) :: boolean()
   def valid?(address) do
     with true <- address_valid_format(address),
          true <- address_case_check(address) do
