@@ -51,7 +51,7 @@ defmodule Cryptopunk.Crypto.Ethereum do
   end
 
   @doc """
-  Encode an address in the EIP-55 xixed-case checksum encoding
+  Encode an address in the EIP-55 mixed-case checksum encoding
 
   Examples:
 
