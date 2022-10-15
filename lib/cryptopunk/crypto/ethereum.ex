@@ -2,6 +2,7 @@ defmodule Cryptopunk.Crypto.Ethereum do
   @moduledoc """
   Ethereum address generation logic
   """
+  alias Cryptopunk.Crypto.Ethereum.ChecksumEncoding
   alias Cryptopunk.Crypto.Ethereum.Validation
   alias Cryptopunk.Key
 
@@ -47,6 +48,28 @@ defmodule Cryptopunk.Crypto.Ethereum do
   @spec valid?(binary()) :: boolean()
   def valid?(address) do
     Validation.valid?(address)
+  end
+
+  @doc """
+  Encode an address in the EIP-55 xixed-case checksum encoding
+
+  Examples:
+
+      iex> Cryptopunk.Crypto.Ethereum.checksum_encode("0xea0a6e3c511bbd10f4519ece37dc24887e11b55d")
+      {:ok, "0xea0A6E3c511bbD10f4519EcE37Dc24887e11b55d"}
+
+      iex> Cryptopunk.Crypto.Ethereum.checksum_encode("0x52908400098527886e0f7030069857d2e4169ee7")
+      {:ok, "0x52908400098527886E0F7030069857D2E4169EE7"}
+
+      iex> Cryptopunk.Crypto.Ethereum.checksum_encode("0x52908400098527886e0f7030069857d2e4169ee")
+      {:error, :invalid_address_length}
+  """
+  @spec checksum_encode(String.t()) ::
+          {:ok, String.t()}
+          | {:error, {:unknown_char, String.t()}}
+          | {:error, :invalid_address_length}
+  def checksum_encode(address) do
+    ChecksumEncoding.encode(address)
   end
 
   defp to_address(public_hash) do
