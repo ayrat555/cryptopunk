@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.4 (2022-10-15)
+
+- Add checksum encoding (EIP-55) for ethereum addresses ([#35](https://github.com/ayrat555/cryptopunk/pull/35))
+
 ## 0.6.3 (2022-10-08)
 
 - Fix ethereum address checksum validation ([#33](https://github.com/ayrat555/cryptopunk/pull/33))
