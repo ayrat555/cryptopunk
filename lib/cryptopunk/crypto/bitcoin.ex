@@ -124,6 +124,31 @@ defmodule Cryptopunk.Crypto.Bitcoin do
     end
   end
 
+  @doc """
+  Generate a P2SH-P2WPKH (nested segwit) redeem script from the given private or public key
+
+
+    Examples
+
+      iex> private_key = %Cryptopunk.Key{key: <<16, 42, 130, 92, 247, 244, 62, 96, 24, 129, 187, 141, 124, 42, 176, 116, 234, 171, 184, 107, 3, 229, 255, 72, 30, 116, 79, 243, 36, 142, 184, 24>>, type: :private}
+      iex> Cryptopunk.Crypto.Bitcoin.p2sh_p2wpkh_redeem_script(private_key, :binary)
+      <<0, 20, 193, 203, 121, 210, 219, 113, 190, 119, 212, 137, 6, 218, 95, 65, 113, 88, 250, 48, 13, 85>>
+
+      iex> public_key = %Cryptopunk.Key{key: <<4, 57, 163, 96, 19, 48, 21, 151, 218, 239, 65, 251, 229, 147, 160, 44, 197, 19, 208, 181, 85, 39, 236, 45, 241, 5, 14, 46, 143, 244, 156, 133, 194, 60, 190, 125, 237, 14, 124, 230, 165, 148, 137, 107, 143, 98, 136, 143, 219, 197, 200, 130, 19, 5, 226, 234, 66, 191, 1, 227, 115, 0, 17, 98, 129>>, type: :public}
+      iex> Cryptopunk.Crypto.Bitcoin.p2sh_p2wpkh_redeem_script(public_key, :hex)
+      "00143442193e1bb70916e914552172cd4e2dbc9df811"
+  """
+  @spec p2sh_p2wpkh_redeem_script(Key.t(), :hex | :binary) :: String.t() | binary()
+  def p2sh_p2wpkh_redeem_script(%Key{type: :private} = private_key, format) do
+    private_key
+    |> Key.public_from_private()
+    |> p2sh_p2wpkh_redeem_script(format)
+  end
+
+  def p2sh_p2wpkh_redeem_script(%Key{type: :public} = public_key, format) do
+    P2shP2wpkhAddress.redeem_script(public_key, format)
+  end
+
   defp network_versions do
     legacy_versions =
       Map.new(LegacyAddress.version_bytes(), fn {network, version} ->
