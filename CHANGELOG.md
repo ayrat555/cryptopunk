@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.6 (2022-12-11)
+
+- Update ex_pbkdf2 to 0.7.1
+
 ## 0.6.5 (2022-10-24)
 
 - Expose the redeem script function for P2SH-P2WPKH ([#37](https://github.com/ayrat555/cryptopunk/pull/37))
