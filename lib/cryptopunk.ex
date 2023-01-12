@@ -16,7 +16,7 @@ defmodule Cryptopunk do
   alias Cryptopunk.Seed
 
   @doc """
-  Generate mnenmonic with the given number of words (24 by default).
+  Generate a mnemonic with the given number of words (24 by default).
   See https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
 
   Examples:
