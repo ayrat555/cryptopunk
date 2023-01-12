@@ -1,7 +1,6 @@
 defmodule Cryptopunk.SeedTest do
   use ExUnit.Case
 
-  alias Cryptopunk.Mnemonic
   alias Cryptopunk.Seed
 
   describe "create/1" do
@@ -43,7 +42,7 @@ defmodule Cryptopunk.SeedTest do
         "2041546864449caff939d32d574753fe684d3c947c3346713dd8423e74abcf8c"
         |> Base.decode16!(case: :lower)
 
-      mnemonic = Mnemonic.create_from_entropy(entropy)
+      mnemonic = Mnemoniac.create_mnemonic_from_entropy!(entropy)
 
       result = mnemonic |> Seed.create() |> Base.encode16(case: :lower)
 

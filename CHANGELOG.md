@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.7 (2023-01-12)
+
+- Use `mnemoniac` for mnemonic generation ([#40](https://github.com/ayrat555/cryptopunk/pull/40))
+
 ## 0.6.6 (2022-12-11)
 
 - Update ex_pbkdf2 to 0.7.1
