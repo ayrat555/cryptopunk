@@ -13,7 +13,6 @@ defmodule Cryptopunk do
   alias Cryptopunk.Derivation
   alias Cryptopunk.Derivation.Path
   alias Cryptopunk.Key
-  alias Cryptopunk.Mnemonic
   alias Cryptopunk.Seed
 
   @doc """
@@ -30,7 +29,7 @@ defmodule Cryptopunk do
       true
   """
   @spec create_mnemonic(non_neg_integer()) :: String.t() | no_return
-  def create_mnemonic(word_number \\ 24), do: Mnemonic.create(word_number)
+  def create_mnemonic(word_number \\ 24), do: Mnemoniac.create_mnemonic!(word_number)
 
   @doc """
   Generate mnemonic from entropy.
@@ -42,7 +41,7 @@ defmodule Cryptopunk do
       "almost coil firm shield cement hobby fan cage wine idea track prison scale alone close favorite limb still"
   """
   @spec create_mnemonic_from_entropy(binary()) :: String.t() | no_return
-  def create_mnemonic_from_entropy(entropy), do: Mnemonic.create_from_entropy(entropy)
+  def create_mnemonic_from_entropy(entropy), do: Mnemoniac.create_mnemonic_from_entropy!(entropy)
 
   @doc """
   Generate seed from mnemonic.
