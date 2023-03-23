@@ -64,12 +64,12 @@ defmodule Cryptopunk.Derivation do
       when is_normal(idx) do
     ser_public_key = Utils.compress_public_key(public_key)
 
-    new_private_key =
+    new_public_key =
       chain_code
       |> Utils.hmac_sha512(<<ser_public_key::binary, idx::32>>)
       |> create_from_public_key(public_key, idx)
 
-    do_derive(new_private_key, tail)
+    do_derive(new_public_key, tail)
   end
 
   def do_derive(%Key{type: :public}, [idx | _tail]) when is_hardened(idx) do
