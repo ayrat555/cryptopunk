@@ -5,7 +5,7 @@ defmodule Cryptopunk.MixProject do
     [
       app: :cryptopunk,
       version: "0.6.7",
-      elixir: "~> 1.12",
+      elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       description: "Hierarchical deterministic wallet (HD Wallet)",
