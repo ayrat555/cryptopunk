@@ -1,68 +1,67 @@
-name: ci
+name: CI
 
 on:
+  pull_request:
   push:
     branches:
       - master
-  pull_request:
 
 jobs:
-  ci:
+  mix_test:
+    runs-on: ubuntu-20.04
     env:
       MIX_ENV: test
+
+    name: Elixir ${{ matrix.pair.elixir }} / OTP ${{ matrix.pair.otp }}
+
     strategy:
       fail-fast: false
       matrix:
         include:
           - pair:
-              elixir: '1.13'
-              otp: '24.3'
-            lint: lint
+              elixir: 1.12.1
+              otp: 24.0.2
           - pair:
-              elixir: '1.13'
-              otp: '25.0'
+              elixir: 1.12.1
+              otp: 23.3.1
+          - pair:
+              elixir: 1.11.4
+              otp: 23.3.1
+          - pair:
+              elixir: 1.11.4
+              otp: 24.0.2
+          - pair:
+              elixir: 1.10.4
+              otp: 23.3.1
+          - pair:
+              elixir: 1.10.4
+              otp: 22.2.8
+          - pair:
+              elixir: 1.14.3
+              otp: 25.2.1
             lint: lint
-
-    runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: erlef/setup-beam@v1
+      - uses: erlef/setup-beam@v1.15
         with:
-          otp-version: ${{matrix.pair.otp}}
-          elixir-version: ${{matrix.pair.elixir}}
+          otp-version: ${{ matrix.pair.otp }}
+          elixir-version: ${{ matrix.pair.elixir }}
 
-      - uses: actions/cache@v2
-        with:
-          path: |
-            deps
-            _build
-          key: ${{ runner.os }}-mix-${{matrix.pair.elixir}}-${{matrix.pair.otp}}-${{ hashFiles('**/mix.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-mix-${{matrix.pair.elixir}}-${{matrix.pair.otp}}-
+      - name: Install Dependencies
+        run: mix deps.get
 
-      - name: Run mix deps.get
-        run: mix deps.get --only test
-
-      - name: Run mix format
-        run: mix format --check-formatted
+      - run: mix format --check-formatted
         if: ${{ matrix.lint }}
 
-      - name: Run mix deps.compile
-        run: mix deps.compile
-
-      - name: Run mix compile
-        run: mix compile --warnings-as-errors
+      - run: mix deps.unlock --check-unused
         if: ${{ matrix.lint }}
 
-      - name: Run credo
-        run: mix credo --strict
-        if: ${{ matrix.lint }}
+      - run: mix deps.compile
 
-      - name: Run mix test
-        run: mix test
+      - run: mix compile --warnings-as-errors
 
-      - name: Run dialyzer
-        run: mix dialyzer
+      - run: mix test
+
+      - run: mix dialyzer
         if: ${{ matrix.lint }}
