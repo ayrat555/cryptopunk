@@ -1,58 +1,68 @@
-name: CI
+name: ci
 
 on:
-  pull_request:
   push:
     branches:
       - master
+  pull_request:
 
 jobs:
-  mix_test:
-    runs-on: ubuntu-20.04
+  ci:
     env:
       MIX_ENV: test
-
-    name: Elixir ${{ matrix.pair.elixir }} / OTP ${{ matrix.pair.otp }}
-
     strategy:
       fail-fast: false
       matrix:
         include:
           - pair:
-              elixir: 1.12.1
-              otp: 24.0.2
-          - pair:
-              elixir: 1.11.4
-              otp: 24.0.2
-          - pair:
-              elixir: 1.14.3
-              otp: 25.2.1
+              elixir: '1.13'
+              otp: '24.3'
             lint: lint
+          - pair:
+              elixir: '1.13'
+              otp: '25.0'
+            lint: lint
+
+    runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
-      - uses: erlef/setup-beam@v1.15
+      - uses: erlef/setup-beam@v1
         with:
-          otp-version: ${{ matrix.pair.otp }}
-          elixir-version: ${{ matrix.pair.elixir }}
+          otp-version: ${{matrix.pair.otp}}
+          elixir-version: ${{matrix.pair.elixir}}
 
-      - name: Install Dependencies
-        run: mix deps.get
+      - uses: actions/cache@v2
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-mix-${{matrix.pair.elixir}}-${{matrix.pair.otp}}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-${{matrix.pair.elixir}}-${{matrix.pair.otp}}-
 
-      - run: mix format --check-formatted
+      - name: Run mix deps.get
+        run: mix deps.get --only test
+
+      - name: Run mix format
+        run: mix format --check-formatted
         if: ${{ matrix.lint }}
 
-      - run: mix deps.unlock --check-unused
+      - name: Run mix deps.compile
+        run: mix deps.compile
+
+      - name: Run mix compile
+        run: mix compile --warnings-as-errors
         if: ${{ matrix.lint }}
 
-      - run: mix deps.compile
-
-      - run: mix compile --warnings-as-errors
-
-      - run: mix test
-
-      - run: mix dialyzer
+      - name: Run credo
+        run: mix credo --strict
         if: ${{ matrix.lint }}
 
-      - run: mix credo --strict
+      - name: Run mix test
+        run: mix test
+
+      - name: Run dialyzer
+        run: mix dialyzer
         if: ${{ matrix.lint }}
