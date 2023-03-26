@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.0 (2023-03-26)
+
+- Use precompiled versions of ex_keccak, ex_pbkdf2, ex_secp256k1, ex_bech32, ex_base58 rust nifs
+
 ## 0.6.7 (2023-01-12)
 
 - Use `mnemoniac` for mnemonic generation ([#40](https://github.com/ayrat555/cryptopunk/pull/40))
