@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.1 (2023-06-06)
+
+- Update Nif deps ([#50](https://github.com/ayrat555/cryptopunk/pull/50))
+
 ## 0.7.0 (2023-03-26)
 
 - Use precompiled versions of ex_keccak, ex_pbkdf2, ex_secp256k1, ex_bech32, ex_base58 rust nifs
