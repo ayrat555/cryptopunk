@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.7.1 (2023-06-06)
+## 0.7.1 (2023-09-06)
 
 - Update Nif deps ([#50](https://github.com/ayrat555/cryptopunk/pull/50))
 
