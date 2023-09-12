@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.2 (2023-09-12)
+
+- Update ex_keccak to 0.7.3 ([#53](https://github.com/ayrat555/cryptopunk/pull/53))
+
 ## 0.7.1 (2023-09-06)
 
 - Update Nif deps ([#50](https://github.com/ayrat555/cryptopunk/pull/50))
