@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.3 (2023-09-22)
+
+- Update mnemoniac to 0.1.3 ([#55](https://github.com/ayrat555/cryptopunk/pull/55))
+
 ## 0.7.2 (2023-09-12)
 
 - Update ex_keccak to 0.7.3 ([#53](https://github.com/ayrat555/cryptopunk/pull/53))
