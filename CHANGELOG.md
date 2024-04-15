@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.4 (2024-04-15)
+
+- Update Nif deps
+
 ## 0.7.3 (2023-09-22)
 
 - Update mnemoniac to 0.1.3 ([#55](https://github.com/ayrat555/cryptopunk/pull/55))
