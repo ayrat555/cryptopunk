@@ -129,4 +129,45 @@ defmodule Cryptopunk do
   """
   @spec parse_path(String.t()) :: {:error, any()} | {:ok, Path.t()}
   def parse_path(path), do: Path.parse(path)
+
+  @doc """
+  Converts mnemonic to the private key according to the derivation path
+
+  Examples:
+
+      iex> mnemonic = "able steel blanket pause nation gossip glass renew width lock once almost glory deal pledge evidence glide athlete pupil viable blue powder photo enhance"
+      iex> {:ok, path} = Cryptopunk.parse_path("m/44'/60'/0'/0/0")
+      iex> Cryptopunk.private_key_from_mnemonic(mnemonic, path)
+      {:ok, %Cryptopunk.Key{type: :private, key: <<188, 125, 161, 20, 128, 4, 204, 177, 175, 157, 228, 17, 237, 100, 44, 146, 74, 134, 213, 201, 56, 156, 78, 175, 34, 224, 22, 27, 230, 14, 168, 187>>, chain_code: <<65, 132, 123, 250, 223, 30, 192, 11, 3, 90, 161, 46, 135, 232, 252, 35, 39, 176, 22, 190, 1, 20, 106, 199, 146, 45, 137, 139, 113, 208, 169, 229>>, depth: 5, index: 0, parent_fingerprint: <<84, 196, 245, 151>>}}
+
+      iex> mnemonic = "able steel blanket pause nation gossip glass renew width lock once almost glory deal pledge evidence glide athlete pupil viable blue powder photo enhance"
+      iex> Cryptopunk.private_key_from_mnemonic(mnemonic, "m/44'/60'/0'/0/0", :hex)
+      {:ok, "bc7da1148004ccb1af9de411ed642c924a86d5c9389c4eaf22e0161be60ea8bb"}
+  """
+  @spec private_key_from_mnemonic(String.t(), String.t() | Path.t(), atom()) ::
+          {:ok, Key.t() | String.t()} | {:error, any()}
+  def private_key_from_mnemonic(mnemonic, path, type \\ :struct)
+
+  def private_key_from_mnemonic(mnemonic, path, type) when is_binary(path) do
+    case parse_path(path) do
+      {:ok, parsed_path} -> private_key_from_mnemonic(mnemonic, parsed_path, type)
+      error -> error
+    end
+  end
+
+  def private_key_from_mnemonic(mnemonic, path, type) do
+    private_key =
+      mnemonic
+      |> create_seed()
+      |> master_key_from_seed()
+      |> derive_key(path)
+
+    result =
+      case type do
+        :hex -> Base.encode16(private_key.key, case: :lower)
+        :struct -> private_key
+      end
+
+    {:ok, result}
+  end
 end
