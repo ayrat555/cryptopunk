@@ -143,6 +143,10 @@ defmodule Cryptopunk do
       iex> mnemonic = "able steel blanket pause nation gossip glass renew width lock once almost glory deal pledge evidence glide athlete pupil viable blue powder photo enhance"
       iex> Cryptopunk.private_key_from_mnemonic(mnemonic, "m/44'/60'/0'/0/0", :hex)
       {:ok, "bc7da1148004ccb1af9de411ed642c924a86d5c9389c4eaf22e0161be60ea8bb"}
+
+      iex> mnemonic = "able steel blanket pause nation gossip glass renew width lock once almost glory deal pledge evidence glide athlete pupil viable blue powder photo enhance"
+      iex> Cryptopunk.private_key_from_mnemonic(mnemonic, "hello", :hex)
+      {:error, :invalid_path}
   """
   @spec private_key_from_mnemonic(String.t(), String.t() | Path.t(), atom()) ::
           {:ok, Key.t() | String.t()} | {:error, any()}
