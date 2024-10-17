@@ -3,38 +3,34 @@ defmodule Cryptopunk.Crypto.Tron.ChecksumEncoding do
 
   @address_length 34
 
-  @spec encode(String.t()) ::
-          {:ok, String.t()}
-          | {:error, {:unknown_char, String.t()}}
-          | {:error, :invalid_address_length}
-  def encode("T" <> address) do
-    encode(address)
-  end
-
-  def encode(address) when byte_size(address) == @address_length do
-    address = String.downcase(address)
-    
-    # TO IMPLEMENT
-
-  end
-
-  def encode(_address) do
-    {:error, :invalid_address_length}
-  end
-
   @spec valid?(String.t()) :: boolean()
-  def valid?("T" <> address) do
-    valid?(address)
-  end
-
   def valid?(address) do
-    String.length(address) == @address_length && do_check_address_checksum(address)
+    String.starts_with?(address, "T") && String.length(address) == @address_length &&
+      do_check_address_checksum(address)
   end
 
   defp do_check_address_checksum(address) do
-    case encode(address) do
-      {:ok, "T" <> ^address} -> true
-      _ -> false
+    with {:ok, binary} <-
+           ExBase58.decode(address) do
+      <<address_without_checksum::binary-size(byte_size(binary) - 4), checksum::binary-size(4)>> =
+        binary
+
+      checksum = checksum |> Base.encode16(case: :lower)
+
+      double_hash =
+        address_without_checksum
+        |> Base.encode16(case: :lower)
+        |> ExKeccak.hash_256()
+        |> ExKeccak.hash_256()
+
+      <<expected_hash::binary-size(8), _::binary>> = double_hash
+
+      IO.inspect(expected_hash |> Base.encode16(case: :lower))
+
+      IO.inspect(checksum)
+    else
+      {:error, :invalid_alphabet} -> {:error, :invalid_alphabet}
+      {:error, :decode_error} -> {:error, :decode_error}
     end
   end
 end
