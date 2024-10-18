@@ -25,8 +25,8 @@ defmodule Cryptopunk.Crypto.Tron.ChecksumEncoding do
 
       expected_hash == checksum
     else
-      {:error, :invalid_alphabet} -> {:error, :invalid_alphabet}
-      {:error, :decode_error} -> {:error, :decode_error}
+      {:error, :invalid_alphabet} -> false
+      {:error, :decode_error} -> false
     end
   end
 end
