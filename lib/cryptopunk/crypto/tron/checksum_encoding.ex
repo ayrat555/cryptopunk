@@ -9,28 +9,21 @@ defmodule Cryptopunk.Crypto.Tron.ChecksumEncoding do
       do_check_address_checksum(address)
   end
 
+  defp sha256(str) do
+    :crypto.hash(:sha256, str)
+  end
+
   defp do_check_address_checksum(address) do
-    with {:ok, bin} <-
+    with {:ok, decoded} <-
            ExBase58.decode(address) do
-      <<address_without_checksum::binary-size(byte_size(bin) - 4), checksum::binary-size(4)>> =
-        bin
+      <<address_without_checksum::binary-size(byte_size(decoded) - 4), checksum::binary-size(4)>> =
+        decoded
 
-      checksum = checksum |> Base.encode16(case: :lower)
-
-      double_hash =
-        address_without_checksum
-        |> Base.encode16(case: :lower)
-
-      double_hash =
-        :crypto.hash(:sha3_256, double_hash)
-        |> Base.encode16(case: :lower)
-
-      double_hash =
-        :crypto.hash(:sha3_256, double_hash)
+      double_hash = address_without_checksum |> sha256() |> sha256()
 
       <<expected_hash::binary-size(4), _::binary>> = double_hash
 
-      IO.inspect("#{expected_hash |> Base.encode16(case: :lower)} == #{checksum}")
+      expected_hash == checksum
     else
       {:error, :invalid_alphabet} -> {:error, :invalid_alphabet}
       {:error, :decode_error} -> {:error, :decode_error}
