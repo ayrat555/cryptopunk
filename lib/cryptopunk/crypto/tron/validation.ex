@@ -9,11 +9,19 @@ defmodule Cryptopunk.Crypto.Tron.Validation do
 
   @spec valid?(String.t()) :: boolean()
   def valid?(address) do
-    with true <- address_valid_format(address),
-         true <- address_case_check(address) do
+    if address_valid_format(address) && address_case_check(address) do
       true
     else
-      _ -> ChecksumEncoding.valid?(address)
+      ChecksumEncoding.valid?(address)
+    end
+  end
+
+  @spec validate_address(String.t()) :: :ok | {:error, atom()}
+  def validate_address(address) do
+    if address_valid_format(address) && address_case_check(address) do
+      :ok
+    else
+      ChecksumEncoding.validate_address(address)
     end
   end
 
