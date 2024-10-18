@@ -4,6 +4,7 @@ defmodule Cryptopunk.Crypto.Tron do
   """
 
   alias Cryptopunk.Key
+  alias Cryptopunk.Crypto.Tron.Validation
 
   @version_bytes %{
     mainnet: <<0x41>>,
@@ -60,4 +61,14 @@ defmodule Cryptopunk.Crypto.Tron do
 
   defp pub_key_64_bytes(%Key{key: <<_::binary-size(1), response::binary-size(64)>>}), do: response
   defp pub_key_64_bytes(%Key{key: data}) when byte_size(data) == 64, do: data
+
+  @spec valid?(binary()) :: boolean()
+  def valid?(address) do
+    Validation.valid?(address)
+  end
+
+  @spec validate_address(binary()) :: :ok | {:error, atom()}
+  def validate_address(address) do
+    Validation.validate_address(address)
+  end
 end
