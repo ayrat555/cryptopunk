@@ -83,4 +83,21 @@ defmodule Cryptopunk.Crypto.TronTest do
       refute Tron.ChecksumEncoding.valid?(address)
     end)
   end
+
+  test "test address validation (valid addresses generated from mnemonic)" do
+    mnemonic = Cryptopunk.create_mnemonic()
+
+    seed = Cryptopunk.create_seed(mnemonic)
+    master_key = Cryptopunk.master_key_from_seed(seed)
+    base_path = "m/44'/195'/0'/0"
+
+    Enum.each(1..5, fn idx ->
+      {:ok, path} = Cryptopunk.parse_path("#{base_path}/#{idx}")
+      key = Cryptopunk.derive_key(master_key, path)
+      address = Tron.address(key)
+
+      assert Tron.Validation.valid?(address)
+      assert Tron.ChecksumEncoding.valid?(address)
+    end)
+  end
 end
