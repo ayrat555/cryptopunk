@@ -3,8 +3,8 @@ defmodule Cryptopunk.Crypto.Tron do
   Tron address generation logic.
   """
 
-  alias Cryptopunk.Key
   alias Cryptopunk.Crypto.Tron.Validation
+  alias Cryptopunk.Key
 
   @version_bytes %{
     mainnet: <<0x41>>,
