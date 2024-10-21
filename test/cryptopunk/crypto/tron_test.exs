@@ -54,4 +54,50 @@ defmodule Cryptopunk.Crypto.TronTest do
       assert expected_address == Tron.address(key)
     end)
   end
+
+  test "test address validation (valid addresses)" do
+    expected_addresses = %{
+      0 => "TLWMdArGeBCE3ktiu165w7Tiu2C2JEnW7p",
+      1 => "TQ79zY3LC9bGAD9htj9mz8q9wkmKzpgCN3",
+      2 => "TUYAGCna6UQZ7ogLCrQ3uz33fTsez9hKpo",
+      3 => "TVoJtzDWT57sHJa9gy4q6CpMnDngDze3Kd",
+      4 => "TELVvau4r1TkeWfZBYHPmmHCEdSv5PBzwZ",
+      5 => "TLaybyfiyhDrXNwVf1P57bTxxksadEvmGZ"
+    }
+
+    Enum.each(expected_addresses, fn {_idx, address} ->
+      assert Tron.Validation.valid?(address)
+      assert Tron.ChecksumEncoding.valid?(address)
+    end)
+  end
+
+  test "test address validation (bad addresses)" do
+    expected_addresses = %{
+      0 => "TLWMdArGecCE3ktiu165w7Tiu2C2JEnW7p",
+      1 => "TPepeAddress",
+      2 => "TUYAGCna6UrZ7ogLCrf3uz33fTsez9hKpo"
+    }
+
+    Enum.each(expected_addresses, fn {_idx, address} ->
+      refute Tron.Validation.valid?(address)
+      refute Tron.ChecksumEncoding.valid?(address)
+    end)
+  end
+
+  test "test address validation (valid addresses generated from mnemonic)" do
+    mnemonic = Cryptopunk.create_mnemonic()
+
+    seed = Cryptopunk.create_seed(mnemonic)
+    master_key = Cryptopunk.master_key_from_seed(seed)
+    base_path = "m/44'/195'/0'/0"
+
+    Enum.each(1..5, fn idx ->
+      {:ok, path} = Cryptopunk.parse_path("#{base_path}/#{idx}")
+      key = Cryptopunk.derive_key(master_key, path)
+      address = Tron.address(key)
+
+      assert Tron.Validation.valid?(address)
+      assert Tron.ChecksumEncoding.valid?(address)
+    end)
+  end
 end
