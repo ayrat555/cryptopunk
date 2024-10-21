@@ -24,10 +24,10 @@ defmodule Cryptopunk.Crypto.Tron.ChecksumEncoding do
   end
 
   def validate_address(address) do
-    if not String.starts_with?(address, "T") do
-      {:error, :invalid_start_char}
-    else
+    if String.starts_with?(address, "T") do
       {:error, :invalid_address_length}
+    else
+      {:error, :invalid_start_char}
     end
   end
 
@@ -35,8 +35,7 @@ defmodule Cryptopunk.Crypto.Tron.ChecksumEncoding do
     case ExBase58.decode(address) do
       {:ok, decoded} ->
         <<address_without_checksum::binary-size(byte_size(decoded) - 4),
-          checksum::binary-size(4)>> =
-          decoded
+          checksum::binary-size(4)>> = decoded
 
         double_hash = address_without_checksum |> sha256() |> sha256()
 
