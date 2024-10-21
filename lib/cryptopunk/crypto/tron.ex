@@ -3,8 +3,8 @@ defmodule Cryptopunk.Crypto.Tron do
   Tron address generation logic.
   """
 
-  alias Cryptopunk.Key
   alias Cryptopunk.Crypto.Tron.Validation
+  alias Cryptopunk.Key
 
   @version_bytes %{
     mainnet: <<0x41>>,
@@ -62,6 +62,17 @@ defmodule Cryptopunk.Crypto.Tron do
   defp pub_key_64_bytes(%Key{key: <<_::binary-size(1), response::binary-size(64)>>}), do: response
   defp pub_key_64_bytes(%Key{key: data}) when byte_size(data) == 64, do: data
 
+  @doc """
+  Validate a tron address
+
+  Examples:
+
+      iex> Cryptopunk.Crypto.Tron.valid?("TLHv3v5EuMQgdkghMaj5AAWy6bE4tu2qi2")
+      true
+
+      iex> Cryptopunk.Crypto.Tron.valid?("0xea0a6e3c511bbd10f4519ece37dc24887e11b55D")
+      false
+  """
   @spec valid?(binary()) :: boolean()
   def valid?(address) do
     Validation.valid?(address)

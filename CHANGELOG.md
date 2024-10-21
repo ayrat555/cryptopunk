@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.6 (2024-10-21)
+
+- add tron address validation ([#74](https://github.com/ayrat555/cryptopunk/pull/74))
+
+
 ## 0.7.5 (2024-07-25)
 
 - add `private_key_from_mnemonic ` ([#72](https://github.com/ayrat555/cryptopunk/pull/72))
