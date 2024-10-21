@@ -25,7 +25,7 @@ defmodule Cryptopunk.Crypto.Tron.ChecksumEncoding do
 
   def validate_address(address) do
     if not String.starts_with?(address, "T") do
-      {:error, :invalid_start_address}
+      {:error, :invalid_start_char}
     else
       {:error, :invalid_address_length}
     end
