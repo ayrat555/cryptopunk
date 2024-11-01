@@ -33,10 +33,7 @@ defmodule Cryptopunk.Crypto.Tron.ChecksumEncoding do
 
   defp do_check_address_checksum(address) do
     case ExBase58.decode(address) do
-      {:ok, decoded} ->
-        <<address_without_checksum::binary-size(byte_size(decoded) - 4),
-          checksum::binary-size(4)>> = decoded
-
+      {:ok, <<address_without_checksum::binary-size(21), checksum::binary-size(4)>>} ->
         double_hash = address_without_checksum |> sha256() |> sha256()
 
         <<expected_hash::binary-size(4), _::binary>> = double_hash
@@ -46,6 +43,9 @@ defmodule Cryptopunk.Crypto.Tron.ChecksumEncoding do
         else
           {:error, :invalid_checksum}
         end
+
+      {:ok, _data} ->
+        {:error, :invalid_length}
 
       {:error, reason} ->
         {:error, reason}
