@@ -15,7 +15,7 @@ The package can be installed by adding `cryptopunk` to your list of dependencies
 ```elixir
 def deps do
   [
-    {:cryptopunk, "~> 0.7.7"}
+    {:cryptopunk, "~> 0.7.8"}
   ]
 end
 ```
