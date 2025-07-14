@@ -1,8 +1,12 @@
 # Changelog
 
+## 0.7.8 (2025-07-14)
+
+- Update ex_pbkdf2, ex_secp256k1, ex_bech32, ex_base58, mnemoniac ([#80](https://github.com/ayrat555/cryptopunk/pull/80))
+
 ## 0.7.7 (2024-11-04)
 
-- ix tron checksum encoding for older otps ([#77](https://github.com/ayrat555/cryptopunk/pull/77))
+- fix tron checksum encoding for older otps ([#77](https://github.com/ayrat555/cryptopunk/pull/77))
 
 ## 0.7.6 (2024-10-21)
 
