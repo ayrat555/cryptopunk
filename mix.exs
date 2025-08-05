@@ -4,7 +4,7 @@ defmodule Cryptopunk.MixProject do
   def project do
     [
       app: :cryptopunk,
-      version: "0.7.8",
+      version: "0.7.9",
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
