@@ -2,7 +2,7 @@
 
 ## 0.7.9 (2025-08-05)
 
-- Update NIFs to support newer versions of Linux systems ([#86](https://github.com/ayrat555/cryptopunk/pull/86), [#86](https://github.com/ayrat555/cryptopunk/pull/87))
+- Update NIFs to support newer versions of Linux systems ([#86](https://github.com/ayrat555/cryptopunk/pull/86), [#87](https://github.com/ayrat555/cryptopunk/pull/87))
 
 Now they're built with ubuntu 22.04 instead of 24.04
 
