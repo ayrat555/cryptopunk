@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.9 (2025-08-05)
+
+- Update NIFs to support newer versions of Linux systems ([#86](https://github.com/ayrat555/cryptopunk/pull/86), [#87](https://github.com/ayrat555/cryptopunk/pull/87))
+
+Now they're built with ubuntu 22.04 instead of 24.04
+
 ## 0.7.8 (2025-07-14)
 
 - Update ex_pbkdf2, ex_secp256k1, ex_bech32, ex_base58, mnemoniac ([#80](https://github.com/ayrat555/cryptopunk/pull/80))
