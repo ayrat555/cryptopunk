@@ -45,8 +45,7 @@ defmodule Cryptopunk.Derivation.Path do
   @spec parse(String.t()) :: {:error, any()} | {:ok, t()}
   def parse(string_path) do
     string_path
-    |> String.split("/")
-    |> Enum.map(&String.trim/1)
+    |> split_string_path()
     |> do_parse()
   end
 
@@ -69,16 +68,25 @@ defmodule Cryptopunk.Derivation.Path do
      ]}
   end
 
+  @spec parse_incomplete_path(String.t()) :: {:ok, raw_path()} | {:error, any()}
+  def parse_incomplete_path(string_path) do
+    with [string_type | levels] <- split_string_path(string_path),
+         {:ok, type} <- parse_type(string_type),
+         {:ok, parsed_levels} <- parse_levels(levels) do
+      {:ok, {type, parsed_levels}}
+    end
+  end
+
   @spec two_power_31() :: non_neg_integer()
   def two_power_31, do: @two_power_31
 
   defp do_parse([type, purpose, coin_type, account, change, address_index]) do
     with {:ok, type} <- parse_type(type),
-         {:ok, purpose} <- parse_int(purpose, type: :purpose, hardened: true),
-         {:ok, coin_type} <- parse_int(coin_type, type: :coin_type, hardened: true),
-         {:ok, account} <- parse_int(account, type: :account, hardened: true),
-         {:ok, change} <- parse_int(change, type: :change),
-         {:ok, address_index} <- parse_int(address_index, type: :address_index) do
+         {:ok, purpose} <- parse_level(purpose, type: :purpose, hardened: true),
+         {:ok, coin_type} <- parse_level(coin_type, type: :coin_type, hardened: true),
+         {:ok, account} <- parse_level(account, type: :account, hardened: true),
+         {:ok, change} <- parse_level(change, type: :change),
+         {:ok, address_index} <- parse_level(address_index, type: :address_index) do
       params = [
         type: type,
         purpose: purpose,
@@ -102,17 +110,44 @@ defmodule Cryptopunk.Derivation.Path do
     end
   end
 
-  defp parse_int(int, type: type, hardened: true) do
+  defp parse_level(int, type: type, hardened: true) do
     case Integer.parse(int) do
       {num, "'"} -> {:ok, num}
       _ -> {:error, {:invalid_level, type}}
     end
   end
 
-  defp parse_int(int, type: type) do
+  defp parse_level(int, type: type) do
     case Integer.parse(int) do
       {num, ""} -> {:ok, num}
       _ -> {:error, {:invalid_level, type}}
+    end
+  end
+
+  defp parse_level_with_type(int) do
+    case Integer.parse(int) do
+      {num, ""} -> {:ok, num}
+      {num, "'"} -> {:ok, num + @two_power_31}
+      result -> {:error, {:invalid_path_level, result}}
+    end
+  end
+
+  defp split_string_path(string_path) do
+    string_path
+    |> String.split("/")
+    |> Enum.map(&String.trim/1)
+  end
+
+  defp parse_levels(levels, acc \\ [])
+
+  defp parse_levels([], acc) do
+    {:ok, Enum.reverse(acc)}
+  end
+
+  defp parse_levels([level | tail], acc) do
+    case parse_level_with_type(level) do
+      {:ok, parsed_level} -> parse_levels(tail, [parsed_level | acc])
+      error -> error
     end
   end
 end
