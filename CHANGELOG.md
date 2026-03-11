@@ -2,6 +2,7 @@
 
 ## 0.7.10 (2026-03-11)
 
+- Update ex_secp256k1 to 0.8.0 ([#104](https://github.com/ayrat555/cryptopunk/pull/104))
 - Allow parsing incomplete paths ([#105](https://github.com/ayrat555/cryptopunk/pull/105))
 
 ## 0.7.9 (2025-08-05)
