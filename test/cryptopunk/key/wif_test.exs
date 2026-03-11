@@ -34,8 +34,7 @@ defmodule Cryptopunk.Key.WIFTest do
   describe "decode/2" do
     test "decodes key on mainnet with compression" do
       assert <<50, 8, 92, 222, 223, 155, 132, 50, 53, 227, 114, 79, 88, 11, 248, 24, 239, 76, 236,
-               39, 195, 198, 112, 133, 224, 41, 65, 138, 91, 47, 111,
-               43>> ==
+               39, 195, 198, 112, 133, 224, 41, 65, 138, 91, 47, 111, 43>> ==
                WIF.decode(
                  "Kxty66SRDbbSYUWL76fUaSuBfBuNDj7SCvc6m5ywpEBqq2tBh1PG",
                  network: :mainnet,
@@ -45,8 +44,7 @@ defmodule Cryptopunk.Key.WIFTest do
 
     test "decodes key on testnet without compression" do
       assert <<50, 8, 92, 222, 223, 155, 132, 50, 53, 227, 114, 79, 88, 11, 248, 24, 239, 76, 236,
-               39, 195, 198, 112, 133, 224, 41, 65, 138, 91, 47, 111,
-               43>> ==
+               39, 195, 198, 112, 133, 224, 41, 65, 138, 91, 47, 111, 43>> ==
                WIF.decode(
                  "cPFxZ1SGefHhhuybVWUbwmQFHRCmtBD8GxkZsWSTKLqr5muDxfBL",
                  network: :testnet
